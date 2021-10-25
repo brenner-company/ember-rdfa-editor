@@ -1,0 +1,13 @@
+{
+  "name": "say-codex-citation-plugin",
+  "keywords": [
+    "ember-addon"
+  ],
+  "dependencies": {
+    "ember-cli-babel": "*",
+    "ember-cli-typescript": "*",
+    "ember-cli-htmlbars": "*",
+    "glimmer": "*",
+    "ember-fetch": "^8.1.1"
+  }
+}

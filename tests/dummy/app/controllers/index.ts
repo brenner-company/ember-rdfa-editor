@@ -26,6 +26,8 @@ export default class IndexController extends Controller {
   private xmlEditor?: EditorView;
   private htmlEditor?: EditorView;
 
+  plugins = ["history", "text-styles", "lists", "searching", "tables", "clipboard", "say-codex-citation"];
+
   setup() {
     this.unloadListener = () => {
       this.saveEditorContentToLocalStorage();

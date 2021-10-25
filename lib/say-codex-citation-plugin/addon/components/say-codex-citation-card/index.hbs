@@ -1,0 +1,6 @@
+{{#if this.insideCitation}}
+  <SayCodexCitationCard::EditExisting @controller={{this.controller}} />
+{{else if this.insideMotivation}}
+  <SayCodexCitationCard::AddNew @controller={{this.controller}} />
+{{/if}}
+

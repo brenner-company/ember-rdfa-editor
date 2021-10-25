@@ -1,0 +1,187 @@
+<div>
+  <span class="say-modal-backdrop is-visible" aria-hidden="true"></span>
+  <div class="say-modal say-modal--fullscreen is-visible" tabindex="-1" role="document">
+    <div class="say-modal__header">
+      <div>
+        <h1 class="say-modal__title" tabindex="-1">
+          Voeg een verwijzing toe
+        </h1>
+      </div>
+      <button type="button" {{on "click" @closeModal}} class="say-modal__close">
+        Venster sluiten
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="say-icon say-icon--right say-icon--large">
+          <g class="cross">
+            <path fill-rule="evenodd" d="M12 13.414l-5.293 5.293-1.414-1.414L10.586 12 5.293 6.707l1.414-1.414L12 10.586l5.293-5.293 1.414 1.414L13.414 12l5.293 5.293-1.414 1.414L12 13.414z" class="Vector" clip-rule="evenodd"/>
+          </g>
+        </svg>
+      </button>
+    </div>
+    {{#if this.selectedDecision}}
+      <SayCodexCitationCard::DecisionDetail
+        @insertDecisionCitation={{this.insertDecisionCitation}}
+        @insertArticleCitation={{this.insertArticleCitation}}
+        @close={{this.closeDecisionDetail}}
+        @decision={{this.selectedDecision}}
+      />
+    {{else}}
+      <div class="say-modal__body">
+        <div class="say-modal__sidebar">
+          <form class="say-form">
+            <fieldset class="say-form__fieldset">
+              <div class="say-form__row">
+                <label class="say-label say-label--block" for="search-codex">Zoekterm</label>
+                <Input class="say-input say-input--search say-input--block" @type="text" name="" id="search-codex" @value={{this.text}} @key-up={{perform this.searchText}} />
+              </div>
+              {{!-- Vlaamse Codex currently doesn't contain captions
+                                                                                         <div class="say-form__row">
+                                                                                         <div class="say-checkbox-wrapper">
+                                                                                         <Input class="say-checkbox" @type="checkbox" name="" id="opschrift" @checked={{this.isEnabledSearchCaption}} {{on "change" (perform this.search)}} />
+                                                                                         <label class="say-label" for="opschrift">Zoek in opschrift</label>
+                                                                                         </div>
+                                                                                         </div> --}}
+              {{!-- Vlaamse Codex currently doesn't contain content of decisions
+                                                                                         <div class="say-form__row">
+                                                                                         <div class="say-checkbox-wrapper">
+                                                                                         <Input class="say-checkbox" @type="checkbox" name="" id="inhoud" @checked={{this.isEnabledSearchContent}} {{on "change" (perform this.search)}} />
+                                                                                         <label class="say-label" for="inhoud">Zoek in inhoud</label>
+                                                                                         </div>
+                                                                                         </div> --}}
+            </fieldset>
+            <fieldset class="say-form__fieldset">
+              <div class="say-form__row">
+                <label class="say-label say-label--block" for="search-codex-type">Type document</label>
+                <select class="say-input say-input--select" name="" id="search-codex-type" {{on "change" this.selectLegislationType}}>
+                  {{#each this.legislationTypes as |type|}}
+                    <option value={{type.value}} selected={{eq this.legislationTypeUri type.value}}>{{type.label}}</option>
+                  {{/each}}
+                </select>
+              </div>
+              <div class="say-form__row">
+                <label class="say-label say-label--block" for="search-codex-datum-document-van">Filter op datum document</label>
+                <div class="form__row">
+                  <label class="say-label say-u-hidden-visually" for="search-codex-datum-document-van">Filter op datum document vanaf datum:</label>
+                  <input class="say-input say-input--pre" aria-hidden="true" type="text" name="" value="van">
+                  <EmberFlatpickr
+                    id="search-codex-datum-document-van"
+                    class="say-input"
+                    @date={{readonly this.documentDateFrom}}
+                    @dateFormat="d/m/Y"
+                    @onChange={{this.updateDocumentDateFrom}} />
+                </div>
+                <div class="form__row">
+                  <label class="say-label say-u-hidden-visually" for="search-codex-datum-document-tot">Filter op datum document tot datum:</label>
+                  <input class="say-input say-input--pre" aria-hidden="true" type="text" name="" value="tot">
+                  <EmberFlatpickr
+                    id="search-codex-datum-document-tot"
+                    class="say-input"
+                    @date={{readonly this.documentDateTo}}
+                    @dateFormat="d/m/Y"
+                    @onChange={{this.updateDocumentDateTo}} />
+                </div>
+              </div>
+              <div class="say-form__row">
+                <label class="say-label say-label--block" for="search-codex-datum-staatsblad-van">Filter op datum staatsblad</label>
+                <div class="form__row">
+                  <label class="say-label say-u-hidden-visually" for="search-codex-datum-staatsblad-van">Filter op datum staatsblad vanaf datum:</label>
+                  <input class="say-input say-input--pre" aria-hidden="true" type="text" name="" value="van">
+                  <EmberFlatpickr
+                    id="search-codex-datum-staatsblad-van"
+                    class="say-input"
+                    @date={{readonly this.publicationDateFrom}}
+                    @dateFormat="d/m/Y"
+                    @onChange={{this.updatePublicationDateFrom}} />
+                </div>
+                <div class="form__row">
+                  <label class="say-label say-u-hidden-visually" for="search-codex-datum-staatsblad-tot">Filter op datum staatsblad tot datum:</label>
+                  <input class="say-input say-input--pre" aria-hidden="true" type="text" name="" value="tot">
+                  <EmberFlatpickr
+                    id="search-codex-datum-staatsblad-tot"
+                    class="say-input"
+                    @date={{readonly this.publicationDateTo}}
+                    @dateFormat="d/m/Y"
+                    @onChange={{this.updatePublicationDateTo}} />
+                </div>
+              </div>
+            </fieldset>
+          </form>
+        </div>
+        <div class="say-modal__content">
+          {{#if this.search.isRunning}}
+            <div class="say-modal__info">
+              <p class="say-loader"><span class="say-u-hidden-visually">Aan het laden...</span></p>
+            </div>
+          {{else}}
+            {{#if this.error}}
+              <div class="say-modal__info">
+                <div class="say-alert">
+                  <div class="say-alert__icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true" class="say-icon">
+                      <g class="info-circle">
+                        <path d="M12 22C6.486 22 2 17.515 2 12 2 6.487 6.486 2 12 2s10 4.486 10 10c0 5.515-4.486 10-10 10zm0-18c-4.411 0-8 3.589-8 8s3.589 8 8 8 8-3.589 8-8-3.589-8-8-8zm1 11h2v2H9v-2h2v-3h-1v-2h2a1 1 0 011 1v4zm-1-5.75a1.25 1.25 0 110-2.5 1.25 1.25 0 010 2.5z" class="Vector"/>
+                      </g>
+                    </svg>
+                  </div>
+                  <div class="say-alert__content">
+                    <p class="say-alert__title">Er heeft zich een fout voorgedaan bij het zoeken in de Vlaamse Codex.</p>
+                    <div class="say-alert__message">Moest dit probleem aanhouden, neem contact op met <a href="mailto:Gelinkt-Notuleren@vlaanderen.be">Gelinkt-Notuleren@vlaanderen.be</a>.</div>
+                  </div>
+                </div>
+              </div>
+            {{else if this.decisions.length}}
+              <ul class="say-link-list say-link-list--large">
+                {{#each this.decisions as |decision|}}
+                  <li class="say-link-list__item say-link-list__item--insert">
+                    <button type="button" class="say-link-list__link say-link-list__link--arrow" {{on "click" (fn this.insertDecisionCitation decision)}}>
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="say-icon say-icon--large" aria-hidden="true">
+                        <path d="M14.4,8.35714846 L0,8.35714846 L0,10.7857161 L14.4,10.7857161 L14.4,8.35714846 Z M14.4,3.5 L0,3.5 L0,5.92856769 L14.4,5.92856769 L14.4,3.5 Z M19.2,13.2142838 L19.2,8.35714846 L16.8,8.35714846 L16.8,13.2142838 L12,13.2142838 L12,15.6428646 L16.8,15.6428646 L16.8,20.5 L19.2,20.5 L19.2,15.6428646 L24,15.6428646 L24,13.2142838 L19.2,13.2142838 Z M0,15.6428646 L9.6,15.6428646 L9.6,13.2142838 L0,13.2142838 L0,15.6428646 Z"/>
+                      </svg>
+                      <span>
+                        {{decision.fullTitle}}
+                        <br>
+                        <strong>{{default-date-format decision.publicationDate}}</strong>
+                      </span>
+                    </button>
+                    <button type="button" class="say-link-list__insert" {{on "click" (fn this.openDecisionDetail decision)}}>
+                      Open citaat
+                    </button>
+                  </li>
+                {{/each}}
+              </ul>
+              <div class="say-pagination say-pagination--large">
+                <p class="say-pagination__info">
+                  <span class="say-u-hidden-visually">Rij</span> <strong>Resultaten {{this.rangeStart}} tot en met {{this.rangeEnd}}</strong> van {{this.totalCount}} resultaten
+                </p>
+                <ul class="say-pagination__list">
+                  {{#unless this.isFirstPage}}
+                    <li class="say-pagination__item">
+                      <button type="button" class="say-button say-button--tertiary" {{on "click" this.previousPage}}>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="say-icon say-icon--left">
+                          <path d="M15.429 21L6 12l9.429-9L17 4.5 9.143 12 17 19.5 15.429 21z" class="Vector"/>
+                        </svg>
+                        vorige <span class="say-u-hidden-visually"> {{this.pageSize}} rijen</span>
+                      </button>
+                    </li>
+                  {{/unless}}
+                  {{#unless this.isLastPage}}
+                    <li class="say-pagination__item">
+                      <button type="button" class="say-button say-button--tertiary" {{on "click" this.nextPage}}>
+                        volgende <span class="say-u-hidden-visually"> {{this.pageSize}} rijen</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="say-icon say-icon--right">
+                          <path d="M8.429 21L7 19.5l7.143-7.5L7 4.5 8.429 3 17 12l-8.571 9z" class="Vector"/>
+                        </svg>
+                      </button>
+                    </li>
+                  {{/unless}}
+                </ul>
+              </div>
+            {{else}}
+              <div class="say-modal__info">
+                <p>Geen resultaten gevonden</p>
+              </div>
+            {{/if}}
+          {{/if}}
+        </div>
+      </div>
+    {{/if}}
+  </div>
+</div>

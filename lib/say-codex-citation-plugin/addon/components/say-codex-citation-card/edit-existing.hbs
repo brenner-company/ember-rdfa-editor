@@ -1,0 +1,21 @@
+  <article class="say-card">
+    <header class="say-card__header">
+      <h2 class="say-card__title">Citaat bewerken</h2>
+    </header>
+    <form class="say-form">
+      <fieldset class="say-form__fieldset">
+        <div class="say-form__row">
+          <label class="say-label say-label--block" for="search-codex-type">Label</label>
+          <Input class="say-input say-input--search say-input--block" @type="text" name="" id="search-codex" @value={{this.citationLabel}} />
+        </div>
+        <div class="say-form__row">
+          <label class="say-label say-label--block" for="search-codex-type">URI</label>
+          <Input class="say-input say-input--search say-input--block" @type="text" name="" id="search-codex" @value={{this.citationURI}} />
+        </div>
+        <div class="say-form__row">
+          <button type="submit" class="say-button say-button--tertiary">Save</button>
+          <button type="submit" class="say-button say-button--tertiary">Remove</button>
+        </div>
+      </fieldset>
+    </form>
+  </article>
