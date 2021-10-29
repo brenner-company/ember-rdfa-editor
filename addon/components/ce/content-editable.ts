@@ -60,22 +60,18 @@ export default class ContentEditable extends Component<ContentEditableArgs> {
     // https://rawgit.com/w3c/input-events/v1/index.html#interface-InputEvent-Attributes
     if (event.inputType == "insertText") {
       event.preventDefault();
-      this.editor.emitEvent(new InsertTextEvent(event, CE_OWNER))
+      this.editor.emitEvent(new InsertTextEvent(event, CE_OWNER));
     }
     else if (event.inputType == "deleteContentBackward") {
-      event.preventDefault();
       this.editor.emitEvent(new DeleteContentBackwardEvent(event, CE_OWNER));
     }
     else if (event.inputType == "deleteContentForward") {
-      event.preventDefault();
       this.editor.emitEvent(new DeleteContentForwardEvent(event, CE_OWNER));
     }
     else if (event.inputType == "insertParagraph") {
-      event.preventDefault();
       this.editor.emitEvent(new InsertParagraphEvent(event, CE_OWNER));
     }
     else if (event.inputType == "insertLineBreak") {
-      event.preventDefault();
       this.editor.emitEvent(new InsertLineBreakEvent(event, CE_OWNER));
     }
     else {
@@ -85,6 +81,8 @@ export default class ContentEditable extends Component<ContentEditableArgs> {
 
   @action
   recoverFromUnhandledInput(event: InputEvent) {
+    this.editor.readDom();
+    console.log('unhandled')
     console.log(event);
   }
 

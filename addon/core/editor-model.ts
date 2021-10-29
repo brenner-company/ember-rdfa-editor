@@ -84,6 +84,7 @@ export default interface EditorModel extends MutableModel {
   onDestroy(): void;
 
   get parentContext(): Datastore;
+  read() : void
 }
 
 /**
@@ -173,7 +174,7 @@ export class HtmlModel implements EditorModel {
   /**
    * Read in the document and build up the model.
    */
-  protected read(readSelection = true) {
+  read(readSelection = true) {
     const {rootNodes: parsedNodes, nodeMap} = this.reader.read(this.rootElement);
     if (parsedNodes.length !== 1) {
       throw new Error("Could not create a rich root");

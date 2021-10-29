@@ -28,6 +28,7 @@ export default class ListsPlugin implements EditorPlugin {
     controller.registerCommand(RemoveListCommand);
     controller.registerCommand(UnindentListCommand);
     controller.onEvent("keyDown", this.handleKeydown);
+    controller.onEvent('insertParagraph', handleEnterInList.bind(this, controller));
     this.controller = controller;
   }
 
@@ -40,8 +41,6 @@ export default class ListsPlugin implements EditorPlugin {
     if (eventPayload.key === "Tab") {
       const reverse = eventPayload.shiftKey;
       handleTabInList(event, reverse, this.controller);
-    } else if(eventPayload.key === 'Enter'){
-      handleEnterInList(event, this.controller);
     }
   }
 }

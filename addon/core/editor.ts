@@ -47,6 +47,7 @@ export default interface Editor {
   get viewRoot(): HTMLElement;
 
   get selection(): ModelSelection;
+  readDom(): void
 }
 
 /**
@@ -152,6 +153,10 @@ export class EditorImpl implements Editor {
   registerQuery<A extends unknown[], R>(query: { new(model: ImmutableModel): Query<A, R> }): void {
     const newQuery = new query(this.model);
     this.registeredQueries.set(newQuery.name, newQuery);
+  }
+
+  readDom() {
+    this.model.read();
   }
 
 }
