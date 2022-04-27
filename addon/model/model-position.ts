@@ -8,6 +8,9 @@ import { RelativePosition } from '@lblod/ember-rdfa-editor/model/util/types';
 import ArrayUtils from '@lblod/ember-rdfa-editor/model/util/array-utils';
 import ModelText from '@lblod/ember-rdfa-editor/model/model-text';
 import arrayEquals from '../utils/array-equals';
+import GenTreeWalker from '@lblod/ember-rdfa-editor/model/util/gen-tree-walker';
+import ModelRange from '@lblod/ember-rdfa-editor/model/model-range';
+import { toFilterSkipFalse } from '@lblod/ember-rdfa-editor/model/util/model-tree-walker';
 
 /**
  * Represents a single position in the model. In contrast to the dom,
@@ -409,7 +412,54 @@ export default class ModelPosition {
    * @param steps
    */
   shiftedVisually(steps: number): ModelPosition {
-    return this.shiftedBy(steps);
+    let stepsToShift = steps;
+    let currentPos: ModelPosition = this.clone();
+    let searchRange: ModelRange;
+    const forwards = steps > 0;
+    if (forwards) {
+      const endOfDoc = ModelPosition.fromInNode(
+        currentPos.root,
+        currentPos.root.getMaxOffset()
+      );
+      searchRange = new ModelRange(currentPos, endOfDoc);
+    } else {
+      const startOfDoc = ModelPosition.fromInNode(currentPos.root, 0);
+      searchRange = new ModelRange(startOfDoc, currentPos);
+    }
+    const walker = GenTreeWalker.fromRange({
+      range: searchRange,
+      reverse: !forwards,
+      filter: toFilterSkipFalse((node) => node.isLeaf),
+    });
+
+    while (stepsToShift !== 0) {
+      if (currentPos.isInsideText()) {
+        const newPos = currentPos.shiftedBy(stepsToShift);
+        const shiftedSteps = newPos.parentOffset - currentPos.parentOffset;
+        stepsToShift -= shiftedSteps;
+        currentPos = newPos;
+      } else {
+        const nextLeaf = walker.nextNode();
+        if (nextLeaf) {
+          if (forwards) {
+            currentPos = ModelPosition.fromInNode(
+              nextLeaf,
+              Math.min(stepsToShift, nextLeaf.length)
+            );
+            stepsToShift = Math.max(stepsToShift - nextLeaf.length, 0);
+          } else {
+            currentPos = ModelPosition.fromInNode(
+              nextLeaf,
+              Math.max(nextLeaf.length + stepsToShift, 0)
+            );
+            stepsToShift = Math.min(stepsToShift + nextLeaf.length, 0);
+          }
+        } else {
+          break;
+        }
+      }
+    }
+    return currentPos;
   }
 
   /**

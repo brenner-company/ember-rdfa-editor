@@ -450,5 +450,29 @@ module('Unit | model | model-position', () => {
         referencePosRight.sameAs(referencePosRight.shiftedVisually(1))
       );
     });
+    test('shifts by amount - descends into inline element', (assert) => {
+      const {
+        textNodes: { text, textLeft, textRight },
+      } = vdom`
+        <modelRoot>
+          <span>
+            <text __id="textLeft">ab</text>
+          </span>
+          <text __id="text">c</text>
+          <span>
+            <text __id="textRight">d</text>
+          </span>
+        </modelRoot>
+      `;
+      const referencePosLeft = ModelPosition.fromInTextNode(text, 0);
+      const referencePosRight = ModelPosition.fromInTextNode(text, 1);
+      const oneLeft = ModelPosition.fromInTextNode(textLeft, 1);
+      const oneRight = ModelPosition.fromInTextNode(textRight, 1);
+
+      const shiftedLeft = referencePosLeft.shiftedVisually(-1);
+      assert.true(oneLeft.sameAs(shiftedLeft), shiftedLeft.path.toString());
+      const shiftedRight = referencePosRight.shiftedVisually(1);
+      assert.true(oneRight.sameAs(shiftedRight), shiftedRight.path.toString());
+    });
   });
 });
