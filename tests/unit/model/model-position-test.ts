@@ -433,5 +433,22 @@ module('Unit | model | model-position', () => {
       assert.true(oneLeft.sameAs(referencePos.shiftedVisually(-1)));
       assert.true(oneRight.sameAs(referencePos.shiftedVisually(1)));
     });
+    test('shifts by amount - at doc boundaries', (assert) => {
+      const {
+        textNodes: { text },
+      } = vdom`
+        <modelRoot>
+          <text __id="text">a</text>
+        </modelRoot>
+      `;
+      const referencePosLeft = ModelPosition.fromInTextNode(text, 0);
+      const referencePosRight = ModelPosition.fromInTextNode(text, 1);
+      assert.true(
+        referencePosLeft.sameAs(referencePosLeft.shiftedVisually(-1))
+      );
+      assert.true(
+        referencePosRight.sameAs(referencePosRight.shiftedVisually(1))
+      );
+    });
   });
 });
