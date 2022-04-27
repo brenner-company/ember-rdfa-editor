@@ -42,7 +42,7 @@ export default class ModelPosition {
     return ModelPosition.fromPath(node.root, node.getOffsetPath());
   }
 
-  static fromInTextNode(node: ModelText, offset: number) {
+  static fromInTextNode(node: ModelText, offset: number): ModelPosition {
     if (offset < 0 || offset > node.length) {
       throw new PositionError(
         `Offset ${offset} out of range of text node with length ${node.length}`
@@ -399,6 +399,17 @@ export default class ModelPosition {
       newOffset = maxOffset;
     }
     return ModelPosition.fromInElement(this.parent, newOffset);
+  }
+
+  /**
+   * Return a new position which is this position shifted by a certain
+   * amount of "visual steps" aka what an end user would expect to happen
+   * when hitting the left or right arrowkey "steps" amount of times.
+   * Negative values go left, positive values go right.
+   * @param steps
+   */
+  shiftedVisually(steps: number): ModelPosition {
+    return this.clone();
   }
 
   /**

@@ -418,4 +418,20 @@ module('Unit | model | model-position', () => {
       assert.true(result.sameAs(expected));
     });
   });
+  module('Unit | model | model-position | shiftedVisually', () => {
+    test('shifts by amount - in text node', (assert) => {
+      const {
+        textNodes: { text },
+      } = vdom`
+        <modelRoot>
+          <text __id="text">abc</text>
+        </modelRoot>
+      `;
+      const referencePos = ModelPosition.fromInTextNode(text, 1);
+      const oneLeft = ModelPosition.fromInTextNode(text, 0);
+      const oneRight = ModelPosition.fromInTextNode(text, 2);
+      assert.true(oneLeft.sameAs(referencePos.shiftedVisually(-1)));
+      assert.true(oneRight.sameAs(referencePos.shiftedVisually(1)));
+    });
+  });
 });
