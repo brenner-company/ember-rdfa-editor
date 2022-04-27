@@ -409,7 +409,7 @@ export default class ModelPosition {
    * @param steps
    */
   shiftedVisually(steps: number): ModelPosition {
-    return this.clone();
+    return this.shiftedBy(steps);
   }
 
   /**
