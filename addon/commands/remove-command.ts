@@ -11,7 +11,8 @@ import GenTreeWalker from '../model/util/gen-tree-walker';
 import ModelElement from '../model/model-element';
 import { toFilterSkipFalse } from '../model/util/model-tree-walker';
 import ModelNode from '../model/model-node';
-
+import { PLACEHOLDER_CLASS } from '@lblod/ember-rdfa-editor/model/util/constants';
+import ModelText from '../model/model-text';
 export default class RemoveCommand extends Command {
   name = 'remove';
 
@@ -78,11 +79,18 @@ export default class RemoveCommand extends Command {
       }
 
       if (rangeAfterDelete.start.parent.length === 0) {
-        const finalRange = mutator.insertText(
+        const placeHolderNode = new ModelElement('span');
+        placeHolderNode.className = PLACEHOLDER_CLASS;
+        placeHolderNode.addChild(new ModelText('Insert content'));
+        const finalRange = mutator.insertNodes(
           rangeAfterDelete,
-          '',
-          new MarkSet()
+          placeHolderNode
         );
+        // const finalRange = mutator.insertText(
+        //   rangeAfterDelete,
+        //   '',
+        //   new MarkSet()
+        // );
         this.model.selectRange(finalRange);
       } else {
         this.model.selectRange(rangeAfterDelete);
