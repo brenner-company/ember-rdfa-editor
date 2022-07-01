@@ -66,6 +66,10 @@ export default class ModelNodeUtils {
     );
   }
 
+  static isRdfaElement(element: ModelElement) {
+    return !element.getRdfaAttributes().isEmpty;
+  }
+
   static findAncestor(
     node: ModelNode | null,
     predicate: (node: ModelNode) => boolean,

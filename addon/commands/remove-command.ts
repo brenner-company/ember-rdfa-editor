@@ -2,7 +2,6 @@ import Model from '@lblod/ember-rdfa-editor/model/model';
 import Command from '@lblod/ember-rdfa-editor/commands/command';
 import ModelRange from '../model/model-range';
 import { logExecute } from '@lblod/ember-rdfa-editor/utils/logging-utils';
-import { MarkSet } from '../model/mark';
 import ModelNodeUtils from '../model/util/model-node-utils';
 import ModelPosition from '../model/model-position';
 import { ImpossibleModelStateError } from '../utils/errors';
@@ -77,8 +76,10 @@ export default class RemoveCommand extends Command {
       } else {
         rangeAfterDelete = mutator.removeNodes(removeRange);
       }
-
-      if (rangeAfterDelete.start.parent.length === 0) {
+      if (
+        rangeAfterDelete.start.parent.length === 0 &&
+        ModelNodeUtils.isRdfaElement(rangeAfterDelete.start.parent)
+      ) {
         const placeHolderNode = new ModelElement('span');
         placeHolderNode.className = PLACEHOLDER_CLASS;
         placeHolderNode.addChild(new ModelText('Insert content'));
