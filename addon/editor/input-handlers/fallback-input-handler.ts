@@ -41,8 +41,7 @@ export default class FallbackInputHandler extends InputHandler {
     );
   }
 
-  handleEvent(event: Event): HandlerResponse {
-    console.log(event);
+  handleEvent(): HandlerResponse {
     this.rawEditor.model.read();
     this.rawEditor.model.saveSnapshot();
     return { allowPropagation: false, allowBrowserDefault: true };
