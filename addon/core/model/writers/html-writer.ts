@@ -56,28 +56,31 @@ export default class HtmlWriter {
         throw new WriterError(
           'corresponding view to modelInlineComponent is not an HTML Element'
         );
-      const updatedView = this.parseInlineComponent(node, state);
+      const updatedView = this.parseInlineComponent(node);
+      const parsedChildren = this.parseChildren(node.children, state);
       if (state.inlineComponentsRegistry.activeComponents.has(node)) {
         state.inlineComponentsRegistry.updateComponentInstanceNode(
           node,
-          updatedView
+          updatedView,
+          parsedChildren
         );
       } else {
         state.inlineComponentsRegistry.addComponentInstance(
           updatedView,
+          parsedChildren,
           node.spec.name,
           node
         );
       }
     }
   }
-  private parseNode(modelNode: ModelNode, state: State): Node {
+  private parseNode(modelNode: ModelNode): Node {
     if (ModelNode.isModelElement(modelNode)) {
       return this.parseElement(modelNode);
     } else if (ModelNode.isModelText(modelNode)) {
       return this.parseText(modelNode);
     } else if (ModelNode.isModelInlineComponent(modelNode)) {
-      return this.parseInlineComponent(modelNode, state);
+      return this.parseInlineComponent(modelNode);
     } else {
       throw new NotImplementedError('Unsupported node type');
     }
@@ -88,9 +91,27 @@ export default class HtmlWriter {
       ModelNode.isModelElement(modelNode) &&
       !ModelNodeUtils.isLumpNode(modelNode)
     ) {
-      return this.parseNode(modelNode, state);
+      return this.parseNode(modelNode);
+    } else if (ModelNode.isModelInlineComponent(modelNode)) {
+      const result = this.parseNode(modelNode) as HTMLElement;
+      const parsedChildren = this.parseChildren(modelNode.children, state);
+      if (state.inlineComponentsRegistry.activeComponents.has(modelNode)) {
+        state.inlineComponentsRegistry.updateComponentInstanceNode(
+          modelNode,
+          result,
+          parsedChildren
+        );
+      } else {
+        state.inlineComponentsRegistry.addComponentInstance(
+          result,
+          parsedChildren,
+          modelNode.spec.name,
+          modelNode
+        );
+      }
+      return result;
     } else {
-      const result = this.parseNode(modelNode, state) as HTMLElement;
+      const result = this.parseNode(modelNode) as HTMLElement;
       const children = (modelNode as ModelElement).children;
       result.append(...this.parseChildren(children, state));
       return result;
@@ -163,21 +184,15 @@ export default class HtmlWriter {
     return current;
   }
 
-  private parseInlineComponent(component: ModelInlineComponent, state: State) {
+  private parseInlineComponent(component: ModelInlineComponent) {
     const node = writeHtmlInlineComponent(component, true);
     if (isElement(node)) {
-      state.inlineComponentsRegistry.addComponentInstance(
-        node,
-        component.spec.name,
-        component
-      );
+      return node;
     } else {
       throw new NotImplementedError(
         'Inline component should have an htmlelement as root'
       );
     }
-
-    return node;
   }
 
   swapElement(node: HTMLElement, replacement: HTMLElement) {

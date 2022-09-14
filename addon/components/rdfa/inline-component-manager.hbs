@@ -1,9 +1,18 @@
 {{#each this.inlineComponents as |compEntry|}}
   {{#in-element compEntry.node insertBefore=null}}
-    {{component
+
+    {{#component
       compEntry.emberComponentName
       componentController=compEntry.componentController
       editorController=compEntry.editorController
     }}
+      <span
+        contenteditable='true'
+        data-slot='true'
+        {{did-insert (fn this.insertedComponent compEntry.children)}}
+      >
+
+      </span>
+    {{/component}}
   {{/in-element}}
 {{/each}}

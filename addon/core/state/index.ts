@@ -197,6 +197,7 @@ export class SayState implements State {
     } else if (isTextNode(node)) {
       return { type: 'text' };
     } else {
+      console.log('NODE', node);
       throw new NotImplementedError();
     }
   }

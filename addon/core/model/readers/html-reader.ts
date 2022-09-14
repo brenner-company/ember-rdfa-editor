@@ -71,11 +71,13 @@ export class HtmlReaderContext {
 
   addComponentInstance(
     element: HTMLElement,
+    children: Node[],
     componentName: string,
     component: ModelInlineComponent
   ) {
     this.inlineComponentsRegistry.addComponentInstance(
       element,
+      children,
       componentName,
       component
     );

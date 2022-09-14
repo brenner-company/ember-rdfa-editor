@@ -8,6 +8,7 @@ import ModelRange from '../core/model/model-range';
 import { ModelError } from '../utils/errors';
 import { logExecute } from '../utils/logging-utils';
 import Command, { CommandContext } from './command';
+import ModelText from '../core/model/nodes/model-text';
 
 declare module '@lblod/ember-rdfa-editor' {
   export interface Commands {
@@ -53,6 +54,7 @@ export default class InsertComponentCommand
         props,
         componentState
       );
+      component.addChild(new ModelText('haha'));
       const newRange = transaction.insertNodes(range, component);
       newRange.collapse();
       if (!component.nextSibling) {

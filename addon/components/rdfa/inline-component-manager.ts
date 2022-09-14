@@ -5,6 +5,7 @@ import { ActiveComponentEntry } from '@lblod/ember-rdfa-editor/core/model/inline
 import { ModelInlineComponent } from '@lblod/ember-rdfa-editor/core/model/inline-components/model-inline-component';
 import { tracked } from '@glimmer/tracking';
 import { isOperationStep } from '@lblod/ember-rdfa-editor/core/state/steps/step';
+import { action } from '@ember/object';
 
 interface InlineComponentManagerArgs {
   controller: Controller;
@@ -27,5 +28,11 @@ export default class InlineComponentManager extends Component<InlineComponentMan
         new Map<ModelInlineComponent, ActiveComponentEntry>();
       this.inlineComponents = [...inlineComponentsMap.values()];
     }
+  }
+
+  @action
+  insertedComponent(children: Node[], element: HTMLElement) {
+    console.log('COMPONENT INSERTED', element, children);
+    element.append(...children);
   }
 }

@@ -1,9 +1,11 @@
+import { isElement } from '@lblod/ember-rdfa-editor/utils/dom-helpers';
 import {
   InlineComponentSpec,
   ModelInlineComponent,
   Properties,
   State,
 } from '../inline-components/model-inline-component';
+import readHtmlNode from './html-node-reader';
 import { HtmlReaderContext } from './html-reader';
 
 export default function readHtmlInlineComponent(
@@ -22,6 +24,21 @@ export default function readHtmlInlineComponent(
     state = JSON.parse(stateAttribute) as State;
   }
   const component = new ModelInlineComponent(spec, props, state);
-  context.addComponentInstance(element, component.spec.name, component);
+  const childrenWrapper = element.querySelector('[data-slot="true"]');
+  if (childrenWrapper && isElement(childrenWrapper)) {
+    for (const child of childrenWrapper.childNodes) {
+      const parsedChildren = readHtmlNode(child, context);
+      component.appendChildren(...parsedChildren);
+    }
+  }
+  const childNodes = childrenWrapper?.childNodes
+    ? [...childrenWrapper.childNodes.entries()]
+    : [];
+  context.addComponentInstance(
+    element,
+    childNodes,
+    component.spec.name,
+    component
+  );
   return [component];
 }

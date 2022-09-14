@@ -22,6 +22,7 @@ export interface InlineComponentsRegistryArgs {
 export type ActiveComponentEntry = {
   emberComponentName: string;
   node: HTMLElement;
+  children: Node[];
   componentController: InlineComponentController;
   editorController: Controller;
 };
@@ -80,6 +81,7 @@ export default class InlineComponentsRegistry {
 
   addComponentInstance(
     node: HTMLElement,
+    children: Node[],
     emberComponentName: string,
     model: ModelInlineComponent
   ) {
@@ -89,6 +91,7 @@ export default class InlineComponentsRegistry {
       this.activeComponents.set(model, {
         emberComponentName,
         node,
+        children,
         componentController,
         editorController: componentSpec.controller,
       });
@@ -99,10 +102,15 @@ export default class InlineComponentsRegistry {
     }
   }
 
-  updateComponentInstanceNode(model: ModelInlineComponent, node: HTMLElement) {
+  updateComponentInstanceNode(
+    model: ModelInlineComponent,
+    node: HTMLElement,
+    children: Node[]
+  ) {
     const entry = this.activeComponents.get(model);
     if (entry) {
       entry.node = node;
+      entry.children = children;
     }
   }
 
@@ -132,6 +140,7 @@ export default class InlineComponentsRegistry {
       if (oldComponentEntry) {
         const newComponentEntry: ActiveComponentEntry = {
           node: oldComponentEntry.node,
+          children: oldComponentEntry.children,
           componentController: new InlineComponentController(
             newInlineComponent,
             oldComponentEntry.node
