@@ -38,9 +38,15 @@ export default class EditorToolbar extends Component<Args> {
   @tracked tableAddColumns = 2;
   selection: ModelSelection | null = null;
 
-  constructor(parent: unknown, args: Args) {
-    super(parent, args);
-    this.args.controller.addTransactionStepListener(this.update.bind(this));
+  @action
+  didInsert() {
+    this.args.controller.addTransactionDispatchListener(this.update);
+  }
+
+  @action
+  willDestroy(): void {
+    this.args.controller.removeTransactionDispatchListener(this.update);
+    super.willDestroy();
   }
 
   get controller() {
@@ -51,11 +57,11 @@ export default class EditorToolbar extends Component<Args> {
     return steps.some((step) => isSelectionStep(step) || isOperationStep(step));
   }
 
-  update(transaction: Transaction, steps: Step[]) {
-    if (this.modifiesSelection(steps)) {
+  update = (transaction: Transaction) => {
+    if (this.modifiesSelection(transaction.steps)) {
       this.updateProperties(transaction);
     }
-  }
+  };
 
   updateProperties(transaction: Transaction) {
     const {

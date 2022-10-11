@@ -1,3 +1,4 @@
+<div {{did-insert this.didInsert}}>
 {{#each this.inlineComponents as |compEntry|}}
   {{#in-element compEntry.node insertBefore=null}}
 
@@ -16,3 +17,4 @@
     {{/component}}
   {{/in-element}}
 {{/each}}
+</div>

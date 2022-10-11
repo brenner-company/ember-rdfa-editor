@@ -2,7 +2,6 @@ import ConfigStep from '@lblod/ember-rdfa-editor/core/state/steps/config-step';
 import {
   isConfigStep,
   isSelectionStep,
-  Step,
 } from '@lblod/ember-rdfa-editor/core/state/steps/step';
 import Transaction from '@lblod/ember-rdfa-editor/core/state/transaction';
 import Controller from '@lblod/ember-rdfa-editor/core/controllers/controller';
@@ -24,15 +23,13 @@ export default class ShowActiveRdfaPlugin implements EditorPlugin {
   }
 
   // eslint-disable-next-line @typescript-eslint/require-await
-  async initialize(controller: Controller) {
+  async initialize(_transaction: Transaction, controller: Controller) {
     this.controller = controller;
-    controller.addTransactionStepListener(
-      this.onTransactionDispatch.bind(this)
-    );
+    controller.addTransactionDispatchListener(this.onTransactionDispatch);
   }
 
-  onTransactionDispatch(transaction: Transaction, steps: Step[]) {
-    const configSteps: ConfigStep[] = steps.filter(
+  onTransactionDispatch = (transaction: Transaction) => {
+    const configSteps: ConfigStep[] = transaction.steps.filter(
       (step) => isConfigStep(step) && step.key === 'showRdfaBlocks'
     ) as ConfigStep[];
     if (configSteps.length) {
@@ -44,15 +41,15 @@ export default class ShowActiveRdfaPlugin implements EditorPlugin {
         rootNode.classList.remove(SHOW_RDFA_CLASS);
       }
     }
-    if (steps.some(isSelectionStep)) {
-      this.updateAttributes(transaction);
+    if (transaction.steps.some(isSelectionStep)) {
+      this.updateAttributes();
     }
-  }
+  };
 
-  updateAttributes(transaction: Transaction) {
+  updateAttributes() {
     removePathAttributes();
     const ancestryPath =
-      transaction.currentSelection.lastRange?.findCommonAncestorsWhere(
+      this.controller.selection.lastRange?.findCommonAncestorsWhere(
         ModelNode.isModelElement
       );
     if (ancestryPath) {
@@ -61,7 +58,7 @@ export default class ShowActiveRdfaPlugin implements EditorPlugin {
 
       for (const element of ancestryPath) {
         const domNode = this.controller.view.modelToView(
-          transaction.workingCopy,
+          this.controller.currentState,
           element
         );
 

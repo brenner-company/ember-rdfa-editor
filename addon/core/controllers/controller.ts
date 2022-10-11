@@ -1,7 +1,3 @@
-import LiveMarkSet, {
-  LiveMarkSetArgs,
-} from '@lblod/ember-rdfa-editor/core/model/marks/live-mark-set';
-import { Mark, MarkSpec } from '@lblod/ember-rdfa-editor/core/model/marks/mark';
 import MarksRegistry from '@lblod/ember-rdfa-editor/core/model/marks/marks-registry';
 import ModelElement, {
   ElementType,
@@ -22,11 +18,15 @@ import Transaction, {
   TransactionStepListener,
 } from '../state/transaction';
 import { View } from '../view';
-import { InlineComponentSpec } from '../model/inline-components/model-inline-component';
 import ModelNode from '../model/nodes/model-node';
 import { EditorUtils } from '@lblod/ember-rdfa-editor/core/controllers/view-controller';
+import { MarkInstanceEntry } from '../model/marks/marks-manager';
 
-export type WidgetLocation = 'toolbar' | 'sidebar' | 'insertSidebar';
+export type WidgetLocation =
+  | 'toolbarMiddle'
+  | 'toolbarRight'
+  | 'sidebar'
+  | 'insertSidebar';
 
 export interface WidgetSpec {
   componentName: string;
@@ -55,7 +55,7 @@ export default interface Controller {
 
   get util(): EditorUtils;
 
-  get ownMarks(): Set<Mark>;
+  get ownMarks(): Set<MarkInstanceEntry>;
 
   get modelRoot(): ModelElement;
 
@@ -65,9 +65,7 @@ export default interface Controller {
 
   get currentState(): State;
 
-  getMarksFor(owner: string): Set<Mark>;
-
-  createLiveMarkSet(args: LiveMarkSetArgs): LiveMarkSet;
+  getMarksFor(owner: string): Set<MarkInstanceEntry>;
 
   createModelElement(type: ElementType): ModelElement;
 
@@ -77,13 +75,7 @@ export default interface Controller {
 
   dryRun<R>(action: (transaction: Transaction) => R): R;
 
-  dispatchTransaction(tr: Transaction, updateView?: boolean): void;
-
-  registerWidget(spec: WidgetSpec): void;
-
-  registerMark(spec: MarkSpec): void;
-
-  registerInlineComponent(component: InlineComponentSpec): void;
+  dispatchTransaction(tr: Transaction): void;
 
   modelToView(node: ModelNode): Node | null;
 

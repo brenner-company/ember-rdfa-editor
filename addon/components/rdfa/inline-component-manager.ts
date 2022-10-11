@@ -13,21 +13,35 @@ interface InlineComponentManagerArgs {
 
 export default class InlineComponentManager extends Component<InlineComponentManagerArgs> {
   @tracked inlineComponents: ActiveComponentEntry[] = [];
-  constructor(parent: unknown, args: InlineComponentManagerArgs) {
-    super(parent, args);
+
+  @action
+  didInsert() {
     this.args.controller.addTransactionDispatchListener(
-      this.updateInlineComponents.bind(this)
+      this.updateInlineComponents
     );
+    this.refreshInlineComponents();
   }
 
-  updateInlineComponents(transaction: Transaction) {
+  @action
+  willDestroy(): void {
+    this.args.controller.removeTransactionDispatchListener(
+      this.updateInlineComponents
+    );
+    super.willDestroy();
+  }
+
+  updateInlineComponents = (transaction: Transaction) => {
     if (transaction.steps.some((step) => isOperationStep(step))) {
-      const inlineComponentsMap =
-        this.args.controller?.currentState.inlineComponentsRegistry
-          .activeComponents ||
-        new Map<ModelInlineComponent, ActiveComponentEntry>();
-      this.inlineComponents = [...inlineComponentsMap.values()];
+      this.refreshInlineComponents();
     }
+  };
+
+  refreshInlineComponents() {
+    const inlineComponentsMap =
+      this.args.controller?.currentState.inlineComponentsRegistry
+        .activeComponents ||
+      new Map<ModelInlineComponent, ActiveComponentEntry>();
+    this.inlineComponents = [...inlineComponentsMap.values()];
   }
 
   @action

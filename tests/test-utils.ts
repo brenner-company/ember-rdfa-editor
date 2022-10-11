@@ -21,6 +21,7 @@ import { EditorStore } from '@lblod/ember-rdfa-editor/utils/datastore/datastore'
 import { Difference } from '@lblod/ember-rdfa-editor/utils/tree-differ';
 import EventBus from '@lblod/ember-rdfa-editor/utils/event-bus';
 import hbs from 'htmlbars-inline-precompile';
+import MarksManager from '@lblod/ember-rdfa-editor/core/model/marks/marks-manager';
 
 /**
  * Utility to get the editor element in a type-safe way
@@ -79,6 +80,7 @@ export function testState({
   document = createModelRoot(),
   commands = defaultCommands(),
   marksRegistry = new MarksRegistry(),
+  marksManager = new MarksManager(),
   inlineComponentsRegistry = new InlineComponentsRegistry(),
   plugins = [],
   selection = new ModelSelection(),
@@ -89,14 +91,15 @@ export function testState({
   const baseIRI = 'http://example.org';
   return new SayState({
     document,
-    transactionStepListeners: [],
+    transactionStepListeners: new Set(),
     commands,
     marksRegistry,
+    marksManager,
     inlineComponentsRegistry,
     plugins,
     selection,
     baseIRI,
-    transactionDispatchListeners: [],
+    transactionDispatchListeners: new Set(),
     config: new Map(),
     datastore: EditorStore.fromParse({ baseIRI, modelRoot: document }),
     eventBus: new EventBus(),

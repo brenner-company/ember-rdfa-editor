@@ -29,8 +29,65 @@
 
 
 
-## 1.0.0-alpha.2 (2022-09-12)
+## 1.0.0-alpha.3 (2022-10-06)
 
+#### :boom: Breaking Change
+* [#397](https://github.com/lblod/ember-rdfa-editor/pull/397) TEDI: live mark set rework ([@elpoelma](https://github.com/elpoelma))
+* [#390](https://github.com/lblod/ember-rdfa-editor/pull/390) Feature: allow for plugins to reload dynamically ([@elpoelma](https://github.com/elpoelma))
+* [#389](https://github.com/lblod/ember-rdfa-editor/pull/389) Enable html pasting by passing a property to the editor component ([@elpoelma](https://github.com/elpoelma))
+
+#### :rocket: Enhancement
+* [#390](https://github.com/lblod/ember-rdfa-editor/pull/390) Feature: allow for plugins to reload dynamically ([@elpoelma](https://github.com/elpoelma))
+* [#358](https://github.com/lblod/ember-rdfa-editor/pull/358) Introduction of a MarksManager ([@elpoelma](https://github.com/elpoelma))
+
+#### :bug: Bug Fix
+* [#398](https://github.com/lblod/ember-rdfa-editor/pull/398) Bugfix: inline component reload ([@elpoelma](https://github.com/elpoelma))
+* [#396](https://github.com/lblod/ember-rdfa-editor/pull/396) Fix issue with computing differences on transaction dispatch  ([@elpoelma](https://github.com/elpoelma))
+* [#389](https://github.com/lblod/ember-rdfa-editor/pull/389) Enable html pasting by passing a property to the editor component ([@elpoelma](https://github.com/elpoelma))
+* [#386](https://github.com/lblod/ember-rdfa-editor/pull/386) Fix: inline component selection issues ([@elpoelma](https://github.com/elpoelma))
+* [#385](https://github.com/lblod/ember-rdfa-editor/pull/385) Ensure dom nodes are correctly converted to model nodes ([@elpoelma](https://github.com/elpoelma))
+* [#373](https://github.com/lblod/ember-rdfa-editor/pull/373) Fix: view to model behaviour ([@elpoelma](https://github.com/elpoelma))
+* [#365](https://github.com/lblod/ember-rdfa-editor/pull/365) Fix issue with inline components not being persisted correctly across reloads ([@elpoelma](https://github.com/elpoelma))
+
+#### :house: Internal
+* [#399](https://github.com/lblod/ember-rdfa-editor/pull/399) build(typescript): enable strict type-checking ([@abeforgit](https://github.com/abeforgit))
+* [#397](https://github.com/lblod/ember-rdfa-editor/pull/397) TEDI: live mark set rework ([@elpoelma](https://github.com/elpoelma))
+* [#395](https://github.com/lblod/ember-rdfa-editor/pull/395) build(deps-dev): bump ember-cli from 3.28.5 to 3.28.6 ([@dependabot[bot]](https://github.com/apps/dependabot))
+* [#394](https://github.com/lblod/ember-rdfa-editor/pull/394) build(deps-dev): bump @typescript-eslint/eslint-plugin from 5.38.1 to 5.39.0 ([@dependabot[bot]](https://github.com/apps/dependabot))
+* [#393](https://github.com/lblod/ember-rdfa-editor/pull/393) build(deps-dev): bump release-it from 15.4.2 to 15.5.0 ([@dependabot[bot]](https://github.com/apps/dependabot))
+* [#392](https://github.com/lblod/ember-rdfa-editor/pull/392) build(deps-dev): bump sinon from 14.0.0 to 14.0.1 ([@dependabot[bot]](https://github.com/apps/dependabot))
+* [#391](https://github.com/lblod/ember-rdfa-editor/pull/391) build(deps-dev): bump @typescript-eslint/parser from 5.38.1 to 5.39.0 ([@dependabot[bot]](https://github.com/apps/dependabot))
+* [#384](https://github.com/lblod/ember-rdfa-editor/pull/384) Chore/cleanup feature flags ([@nvdk](https://github.com/nvdk))
+* [#387](https://github.com/lblod/ember-rdfa-editor/pull/387) build(deps-dev): bump @appuniversum/ember-appuniversum from 1.7.0 to 1.8.0 ([@dependabot[bot]](https://github.com/apps/dependabot))
+* [#382](https://github.com/lblod/ember-rdfa-editor/pull/382) build(deps-dev): bump @types/ember__routing from 4.0.10 to 4.0.11 ([@dependabot[bot]](https://github.com/apps/dependabot))
+* [#383](https://github.com/lblod/ember-rdfa-editor/pull/383) build(deps-dev): bump @types/ember__application from 4.0.1 to 4.0.2 ([@dependabot[bot]](https://github.com/apps/dependabot))
+* [#381](https://github.com/lblod/ember-rdfa-editor/pull/381) build(deps): bump @codemirror/lang-html from 6.1.1 to 6.1.2 ([@dependabot[bot]](https://github.com/apps/dependabot))
+* [#347](https://github.com/lblod/ember-rdfa-editor/pull/347) build(deps-dev): bump ember-template-lint from 3.16.0 to 4.14.0 ([@dependabot[bot]](https://github.com/apps/dependabot))
+
+#### Committers: 3
+- Arne Bertrand ([@abeforgit](https://github.com/abeforgit))
+- Elena Poelman ([@elpoelma](https://github.com/elpoelma))
+- Niels V ([@nvdk](https://github.com/nvdk))
+
+
+## vv1.0.0-alpha.1 (2022-09-12)
+
+#### :boom: Breaking Change
+* [#310](https://github.com/lblod/ember-rdfa-editor/pull/310) Transactional Edits ([@abeforgit](https://github.com/abeforgit))
+
+#### :rocket: Enhancement
+* [#301](https://github.com/lblod/ember-rdfa-editor/pull/301) Internal/tree diffing ([@elpoelma](https://github.com/elpoelma))
+
+#### :house: Internal
+* [#306](https://github.com/lblod/ember-rdfa-editor/pull/306) Merge latest dev, Remove non-TEDI code, cleanup types&tests, rework commands ([@abeforgit](https://github.com/abeforgit))
+* [#307](https://github.com/lblod/ember-rdfa-editor/pull/307) Feature/transactional api steps ([@elpoelma](https://github.com/elpoelma))
+* [#302](https://github.com/lblod/ember-rdfa-editor/pull/302) Improve selection handler ([@elpoelma](https://github.com/elpoelma))
+
+#### Committers: 2
+- Arne Bertrand ([@abeforgit](https://github.com/abeforgit))
+- Elena Poelman ([@elpoelma](https://github.com/elpoelma))
+
+## 1.0.0-alpha.2 (2022-09-12)
 
 ## v1.0.0-alpha.1 (2022-09-12)
 
@@ -50,6 +107,56 @@
 - Arne Bertrand ([@abeforgit](https://github.com/abeforgit))
 - Elena Poelman ([@elpoelma](https://github.com/elpoelma))
 
+
+## 0.63.4 (2022-09-29)
+
+#### :bug: Bug Fix
+* [#376](https://github.com/lblod/ember-rdfa-editor/pull/376) fix(selection-handler): handle cases where selection is empty ([@abeforgit](https://github.com/abeforgit))
+
+#### :house: Internal
+* [#380](https://github.com/lblod/ember-rdfa-editor/pull/380) build(deps-dev): bump @types/qunit from 2.19.2 to 2.19.3 ([@dependabot[bot]](https://github.com/apps/dependabot))
+* [#379](https://github.com/lblod/ember-rdfa-editor/pull/379) build(deps-dev): bump @typescript-eslint/eslint-plugin from 5.37.0 to 5.38.1 ([@dependabot[bot]](https://github.com/apps/dependabot))
+* [#378](https://github.com/lblod/ember-rdfa-editor/pull/378) build(deps-dev): bump sass from 1.54.9 to 1.55.0 ([@dependabot[bot]](https://github.com/apps/dependabot))
+* [#377](https://github.com/lblod/ember-rdfa-editor/pull/377) build(deps-dev): bump typescript from 4.8.3 to 4.8.4 ([@dependabot[bot]](https://github.com/apps/dependabot))
+* [#375](https://github.com/lblod/ember-rdfa-editor/pull/375) build(deps): bump @codemirror/state from 6.1.1 to 6.1.2 ([@dependabot[bot]](https://github.com/apps/dependabot))
+* [#374](https://github.com/lblod/ember-rdfa-editor/pull/374) build(deps): bump @codemirror/view from 6.2.5 to 6.3.0 ([@dependabot[bot]](https://github.com/apps/dependabot))
+* [#371](https://github.com/lblod/ember-rdfa-editor/pull/371) build(deps-dev): bump eslint from 8.22.0 to 8.24.0 ([@dependabot[bot]](https://github.com/apps/dependabot))
+* [#372](https://github.com/lblod/ember-rdfa-editor/pull/372) build(deps-dev): bump @types/ember-qunit from 5.0.1 to 5.0.2 ([@dependabot[bot]](https://github.com/apps/dependabot))
+* [#370](https://github.com/lblod/ember-rdfa-editor/pull/370) build(deps): bump mout from 1.2.3 to 1.2.4 ([@dependabot[bot]](https://github.com/apps/dependabot))
+* [#369](https://github.com/lblod/ember-rdfa-editor/pull/369) build(deps): bump iter-tools from 7.4.0 to 7.5.0 ([@dependabot[bot]](https://github.com/apps/dependabot))
+* [#368](https://github.com/lblod/ember-rdfa-editor/pull/368) build(deps-dev): bump @typescript-eslint/parser from 5.37.0 to 5.38.1 ([@dependabot[bot]](https://github.com/apps/dependabot))
+* [#367](https://github.com/lblod/ember-rdfa-editor/pull/367) build(deps): bump @codemirror/view from 6.2.3 to 6.2.5 ([@dependabot[bot]](https://github.com/apps/dependabot))
+* [#366](https://github.com/lblod/ember-rdfa-editor/pull/366) build(deps-dev): bump @appuniversum/ember-appuniversum from 1.6.0 to 1.7.0 ([@dependabot[bot]](https://github.com/apps/dependabot))
+* [#360](https://github.com/lblod/ember-rdfa-editor/pull/360) build(deps-dev): bump release-it from 15.4.1 to 15.4.2 ([@dependabot[bot]](https://github.com/apps/dependabot))
+
+#### Committers: 1
+- Arne Bertrand ([@abeforgit](https://github.com/abeforgit))
+
+
+## 0.63.3 (2022-09-20)
+
+#### :bug: Bug Fix
+* [#363](https://github.com/lblod/ember-rdfa-editor/pull/363) Remove tracked array from inline components registry ([@elpoelma](https://github.com/elpoelma))
+
+#### :house: Internal
+* [#362](https://github.com/lblod/ember-rdfa-editor/pull/362) Implement htmlContent setter and getter on the RawEditorController ([@elpoelma](https://github.com/elpoelma))
+
+#### Committers: 1
+- Elena Poelman ([@elpoelma](https://github.com/elpoelma))
+
+## 0.63.2 (2022-09-13)
+
+#### :house: Internal
+* [#354](https://github.com/lblod/ember-rdfa-editor/pull/354) build(deps-dev): bump @typescript-eslint/parser from 5.36.2 to 5.37.0 ([@dependabot[bot]](https://github.com/apps/dependabot))
+* [#357](https://github.com/lblod/ember-rdfa-editor/pull/357) build(deps-dev): bump typescript from 4.8.2 to 4.8.3 ([@dependabot[bot]](https://github.com/apps/dependabot))
+* [#356](https://github.com/lblod/ember-rdfa-editor/pull/356) build(deps-dev): bump @typescript-eslint/eslint-plugin from 5.36.2 to 5.37.0 ([@dependabot[bot]](https://github.com/apps/dependabot))
+* [#353](https://github.com/lblod/ember-rdfa-editor/pull/353) build(deps): bump tracked-built-ins from 2.0.1 to 3.1.0 ([@dependabot[bot]](https://github.com/apps/dependabot))
+* [#352](https://github.com/lblod/ember-rdfa-editor/pull/352) build(deps-dev): bump ember-page-title from 6.2.2 to 7.0.0 ([@dependabot[bot]](https://github.com/apps/dependabot))
+* [#348](https://github.com/lblod/ember-rdfa-editor/pull/348) build(deps): bump ember-concurrency from 2.3.6 to 2.3.7 ([@dependabot[bot]](https://github.com/apps/dependabot))
+* [#351](https://github.com/lblod/ember-rdfa-editor/pull/351) build(deps-dev): bump sass from 1.54.8 to 1.54.9 ([@dependabot[bot]](https://github.com/apps/dependabot))
+* [#350](https://github.com/lblod/ember-rdfa-editor/pull/350) build(deps): bump @codemirror/view from ddac2d27f42839dc3d84f46ef8bc65d1a99c3140 to 6.2.3 ([@dependabot[bot]](https://github.com/apps/dependabot))
+* [#349](https://github.com/lblod/ember-rdfa-editor/pull/349) build(deps): bump ember-cli-htmlbars from 6.1.0 to 6.1.1 ([@dependabot[bot]](https://github.com/apps/dependabot))
+* [#344](https://github.com/lblod/ember-rdfa-editor/pull/344) build(deps-dev): bump ember-cli-sass from 10.0.1 to 11.0.1 ([@dependabot[bot]](https://github.com/apps/dependabot))
 
 ## 0.63.1 (2022-09-07)
 
