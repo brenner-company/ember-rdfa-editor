@@ -10,6 +10,7 @@ import Command, { CommandContext } from './command';
 import ModelText from '../core/model/nodes/model-text';
 import { INVISIBLE_SPACE } from '../utils/constants';
 import { InlineComponentName } from '@lblod/ember-rdfa-editor';
+import ModelNode from '../core/model/nodes/model-node';
 
 declare module '@lblod/ember-rdfa-editor' {
   export interface Commands {
@@ -22,6 +23,7 @@ export interface InsertComponentCommandArgs {
   componentState?: State;
   createSnapshot?: boolean;
   range?: ModelRange | null;
+  children?: ModelNode[];
 }
 
 export default class InsertComponentCommand
@@ -40,6 +42,7 @@ export default class InsertComponentCommand
       componentState = {},
       createSnapshot = true,
       range = transaction.workingCopy.selection.lastRange,
+      children = undefined,
     }: InsertComponentCommandArgs
   ): void {
     if (!range) {
@@ -55,7 +58,9 @@ export default class InsertComponentCommand
         props,
         componentState
       );
-      component.addChild(new ModelText('haha'));
+      if (children) {
+        component.appendChildren(...children);
+      }
       const newRange = transaction.insertNodes(
         range,
         new ModelText(INVISIBLE_SPACE),

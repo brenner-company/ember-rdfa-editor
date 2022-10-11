@@ -1,4 +1,4 @@
-<AuCard @flex="true" as |c|>
+<AuCard @flex={{true}} as |c|>
   <c.header>
     <AuHeading @level="2" @skin="4">
       Title
@@ -8,6 +8,6 @@
     </p>
   </c.header>
   <c.content>
-    <p>Content</p>
+    {{yield}}
   </c.content>
 </AuCard>
