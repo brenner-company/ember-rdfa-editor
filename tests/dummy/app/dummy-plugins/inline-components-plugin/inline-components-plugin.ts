@@ -3,6 +3,7 @@ import Controller from '@lblod/ember-rdfa-editor/core/controllers/controller';
 import Transaction from '@lblod/ember-rdfa-editor/core/state/transaction';
 import CounterSpec from '../inline-components-plugin/models/inline-components/counter';
 import DropdownSpec from '../inline-components-plugin/models/inline-components/dropdown';
+import CardSpec from './models/inline-components/card';
 
 export default class InlineComponentsPlugin implements EditorPlugin {
   controller!: Controller;
@@ -23,6 +24,7 @@ export default class InlineComponentsPlugin implements EditorPlugin {
     );
     transaction.registerInlineComponent(new CounterSpec(this.controller));
     transaction.registerInlineComponent(new DropdownSpec(this.controller));
+    transaction.registerInlineComponent(new CardSpec(this.controller));
   }
 
   get name(): string {

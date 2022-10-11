@@ -24,4 +24,13 @@ export default class RdfaIcPluginInsertComponent extends Component<RdfaIcPluginI
       });
     });
   }
+
+  @action
+  insertCard() {
+    this.args.controller.perform((transaction) => {
+      transaction.commands.insertComponent({
+        componentName: 'inline-components-plugin/card',
+      });
+    });
+  }
 }
