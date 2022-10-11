@@ -8,7 +8,8 @@ import { mapKeyEvent } from '@lblod/ember-rdfa-editor/input/keymap';
 import SelectionReader from '@lblod/ember-rdfa-editor/core/model/readers/selection-reader';
 import {
   getWindowSelection,
-  isContentEditable,
+  isInlineComponent,
+  isPartOfInlineComponent,
 } from '@lblod/ember-rdfa-editor/utils/dom-helpers';
 import Controller from '../core/controllers/controller';
 import { NotImplementedError } from '../utils/errors';
@@ -259,8 +260,10 @@ export class EditorInputHandler implements InputHandler {
     mutations: MutationRecord[],
     _observer: MutationObserver
   ) => {
-    mutations = mutations.filter((mutation) =>
-      isContentEditable(mutation.target)
+    mutations = mutations.filter(
+      (mutation) =>
+        !isPartOfInlineComponent(mutation.target) &&
+        !isInlineComponent(mutation.target)
     );
     if (!mutations.length) {
       return;

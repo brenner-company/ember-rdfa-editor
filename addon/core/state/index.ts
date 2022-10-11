@@ -48,6 +48,7 @@ import { underlineMarkSpec } from '../../plugins/basic-styles/marks/underline';
 import {
   getPathFromRoot,
   isElement,
+  isPartOfInlineComponent,
   isTextNode,
 } from '../../utils/dom-helpers';
 import { NotImplementedError } from '../../utils/errors';
@@ -86,7 +87,7 @@ export interface StateArgs {
 export type InitialStateArgs = Omit<Partial<StateArgs>, 'datastore'>;
 
 export interface NodeParseResult {
-  type: 'mark' | 'text' | 'element';
+  type: 'mark' | 'text' | 'element' | 'inline-component';
 }
 
 /**
@@ -197,12 +198,13 @@ export class SayState implements State {
     const matchedMarks = this.marksRegistry.matchMarkSpec(node);
     if (matchedMarks.size) {
       return { type: 'mark' };
+    } else if (isPartOfInlineComponent(node)) {
+      return { type: 'inline-component' };
     } else if (isElement(node)) {
       return { type: 'element' };
     } else if (isTextNode(node)) {
       return { type: 'text' };
     } else {
-      console.log('NODE', node);
       throw new NotImplementedError();
     }
   }
