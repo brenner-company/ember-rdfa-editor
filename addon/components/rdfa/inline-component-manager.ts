@@ -46,7 +46,6 @@ export default class InlineComponentManager extends Component<InlineComponentMan
 
   @action
   insertedComponent(children: Node[], element: HTMLElement) {
-    console.log('COMPONENT INSERTED', element, children);
     element.append(...children);
   }
 }

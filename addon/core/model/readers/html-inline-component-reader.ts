@@ -25,13 +25,10 @@ export default function readHtmlInlineComponent(
     state = JSON.parse(stateAttribute) as State;
   }
   const component = new ModelInlineComponent(spec, props, state);
-  console.log('ELEMENT: ', element);
   const childrenWrapper = element.querySelector(
     INLINE_COMPONENT_CHILDREN_SELECTOR
   );
-  console.log('CHILDREN WRAPPER: ', childrenWrapper);
   if (childrenWrapper && isElement(childrenWrapper)) {
-    console.log('HAS CHILDREN');
     for (const child of childrenWrapper.childNodes) {
       const parsedChildren = readHtmlNode(child, context);
       component.appendChildren(...parsedChildren);
