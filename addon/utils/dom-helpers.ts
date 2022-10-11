@@ -1,4 +1,8 @@
-import { INVISIBLE_SPACE } from '@lblod/ember-rdfa-editor/utils/constants';
+import {
+  INLINE_COMPONENT_CHILDREN_SELECTOR,
+  INLINE_COMPONENT_SELECTOR,
+  INVISIBLE_SPACE,
+} from '@lblod/ember-rdfa-editor/utils/constants';
 import State from '../core/state';
 import ModelNode from '../core/model/nodes/model-node';
 import ModelPosition from '../core/model/model-position';
@@ -194,8 +198,10 @@ export function isContentEditable(node: Node) {
  */
 export function isPartOfInlineComponent(node: Node) {
   const element = node.parentElement;
-  const inlineComponentRoot = element?.closest('.inline-component');
-  const inlineComponentChildrenRoot = element?.closest('span[data-slot]');
+  const inlineComponentRoot = element?.closest(INLINE_COMPONENT_SELECTOR);
+  const inlineComponentChildrenRoot = element?.closest(
+    INLINE_COMPONENT_CHILDREN_SELECTOR
+  );
   if (inlineComponentRoot) {
     if (inlineComponentChildrenRoot) {
       return (

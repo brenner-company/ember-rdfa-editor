@@ -94,7 +94,7 @@ export class ModelInlineComponent<
   get spec() {
     return this._spec;
   }
-  write(dynamic = true): Node {
+  write(dynamic = true): HTMLElement {
     return render(this.spec, this.props, this.state, dynamic);
   }
 

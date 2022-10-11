@@ -3,6 +3,6 @@ import writeHtmlInlineComponent from './html-inline-component-writer';
 
 export default function writeUnpollutedHtmlInlineComponent(
   modelNode: ModelInlineComponent
-): Node {
+): HTMLElement {
   return writeHtmlInlineComponent(modelNode, false);
 }

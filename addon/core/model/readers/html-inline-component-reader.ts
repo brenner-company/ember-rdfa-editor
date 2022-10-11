@@ -1,3 +1,4 @@
+import { INLINE_COMPONENT_CHILDREN_SELECTOR } from '@lblod/ember-rdfa-editor/utils/constants';
 import { isElement } from '@lblod/ember-rdfa-editor/utils/dom-helpers';
 import {
   InlineComponentSpec,
@@ -24,8 +25,13 @@ export default function readHtmlInlineComponent(
     state = JSON.parse(stateAttribute) as State;
   }
   const component = new ModelInlineComponent(spec, props, state);
-  const childrenWrapper = element.querySelector('[data-slot="true"]');
+  console.log('ELEMENT: ', element);
+  const childrenWrapper = element.querySelector(
+    INLINE_COMPONENT_CHILDREN_SELECTOR
+  );
+  console.log('CHILDREN WRAPPER: ', childrenWrapper);
   if (childrenWrapper && isElement(childrenWrapper)) {
+    console.log('HAS CHILDREN');
     for (const child of childrenWrapper.childNodes) {
       const parsedChildren = readHtmlNode(child, context);
       component.appendChildren(...parsedChildren);

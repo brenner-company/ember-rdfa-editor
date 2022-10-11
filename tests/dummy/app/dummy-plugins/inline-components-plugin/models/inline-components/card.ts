@@ -27,7 +27,12 @@ export default class CardSpec extends InlineComponentSpec {
     },
   };
   _renderStatic(_props: Properties, _state: State) {
-    return '';
+    return `<div>
+              <h1>Title</h1>
+              <p>Subtitle</p>
+              <span data-slot>
+              </span>
+            </div>`;
   }
   constructor(controller: Controller) {
     super('inline-components-plugin/card', 'span', controller, false);
