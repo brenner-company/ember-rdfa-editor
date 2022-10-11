@@ -120,6 +120,10 @@ export function isLeaf(node: Node): boolean {
   return node.childNodes.length === 0;
 }
 
+export function isInlineComponent(node: Node): boolean {
+  return isElement(node) && node.classList.contains('inline-component');
+}
+
 /**
  * Determine whether the provided node is an li.
  *
@@ -178,6 +182,32 @@ export function isContentEditable(node: Node) {
     return node.isContentEditable;
   } else {
     return node.parentElement?.isContentEditable;
+  }
+}
+
+/**
+ * Determines whether a node is part on an inline component but not its children. Note: this function returns false
+ * when the node itself is the root of the inline component.
+ *
+ * @param {Node} node An html domNode
+ * @returns {boolean} Boolean indicating whether the node is part of an inline component
+ */
+export function isPartOfInlineComponent(node: Node) {
+  const element = node.parentElement;
+  const inlineComponentRoot = element?.closest('.inline-component');
+  const inlineComponentChildrenRoot = element?.closest('span[data-slot]');
+  if (inlineComponentRoot) {
+    if (inlineComponentChildrenRoot) {
+      return (
+        inlineComponentRoot.compareDocumentPosition(
+          inlineComponentChildrenRoot
+        ) === Node.DOCUMENT_POSITION_CONTAINS
+      );
+    } else {
+      return true;
+    }
+  } else {
+    return false;
   }
 }
 
@@ -604,9 +634,7 @@ export function domPosToModelPos(
     const parseResult = state.parseNode(node);
     if (parseResult.type === 'mark') {
       markOffset += nodeIndex(state, node);
-    } else if (parseResult.type === 'element') {
-      modelIndexPath.push(nodeIndex(state, node) + markOffset);
-    } else {
+    } else if (parseResult.type === 'element' || parseResult.type === 'text') {
       modelIndexPath.push(nodeIndex(state, node) + markOffset);
     }
   }
