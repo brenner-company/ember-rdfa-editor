@@ -32,7 +32,7 @@ export default function readHtmlInlineComponent(
     }
   }
   const childNodes = childrenWrapper?.childNodes
-    ? [...childrenWrapper.childNodes.entries()]
+    ? [...childrenWrapper.childNodes.values()]
     : [];
   context.addComponentInstance(
     element,
