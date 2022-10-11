@@ -9,6 +9,7 @@ import { logExecute } from '../utils/logging-utils';
 import Command, { CommandContext } from './command';
 import ModelText from '../core/model/nodes/model-text';
 import { INVISIBLE_SPACE } from '../utils/constants';
+import { InlineComponentName } from '@lblod/ember-rdfa-editor';
 
 declare module '@lblod/ember-rdfa-editor' {
   export interface Commands {
@@ -16,7 +17,7 @@ declare module '@lblod/ember-rdfa-editor' {
   }
 }
 export interface InsertComponentCommandArgs {
-  componentName: string;
+  componentName: InlineComponentName;
   props?: Properties;
   componentState?: State;
   createSnapshot?: boolean;

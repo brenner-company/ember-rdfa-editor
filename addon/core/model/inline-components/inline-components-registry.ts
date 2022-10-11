@@ -12,9 +12,10 @@ import ModelElement from '../nodes/model-element';
 import { toFilterSkipFalse } from '../../../utils/model-tree-walker';
 import GenTreeWalker from '../../../utils/gen-tree-walker';
 import ModelNode from '../nodes/model-node';
+import { InlineComponentName } from '@lblod/ember-rdfa-editor';
 
 export interface InlineComponentsRegistryArgs {
-  registeredComponents?: Map<string, InlineComponentSpec>;
+  registeredComponents?: Map<InlineComponentName, InlineComponentSpec>;
   componentMatchMap?: Map<TagMatch, InlineComponentSpec[]>;
   activeComponents?: Map<ModelInlineComponent, ActiveComponentEntry>;
 }
@@ -27,13 +28,14 @@ export type ActiveComponentEntry = {
   editorController: Controller;
 };
 export default class InlineComponentsRegistry {
-  private registeredComponents: Map<string, InlineComponentSpec>;
+  private registeredComponents: Map<InlineComponentName, InlineComponentSpec>;
   private componentMatchMap: Map<TagMatch, InlineComponentSpec[]>;
   activeComponents: Map<ModelInlineComponent, ActiveComponentEntry>;
 
   constructor(args?: InlineComponentsRegistryArgs) {
     this.registeredComponents =
-      args?.registeredComponents ?? new Map<string, InlineComponentSpec>();
+      args?.registeredComponents ??
+      new Map<InlineComponentName, InlineComponentSpec>();
     this.componentMatchMap =
       args?.componentMatchMap ?? new Map<TagMatch, InlineComponentSpec[]>();
     this.activeComponents =
@@ -71,7 +73,7 @@ export default class InlineComponentsRegistry {
     );
   }
 
-  lookUpComponent(name: string) {
+  lookUpComponent(name: InlineComponentName) {
     return this.registeredComponents.get(name);
   }
 
@@ -82,7 +84,7 @@ export default class InlineComponentsRegistry {
   addComponentInstance(
     node: HTMLElement,
     children: Node[],
-    emberComponentName: string,
+    emberComponentName: InlineComponentName,
     model: ModelInlineComponent
   ) {
     const componentSpec = this.lookUpComponent(emberComponentName);

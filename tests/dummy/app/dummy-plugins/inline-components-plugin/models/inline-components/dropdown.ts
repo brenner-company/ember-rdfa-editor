@@ -2,6 +2,11 @@ import Controller from '@lblod/ember-rdfa-editor/core/controllers/controller';
 import { InlineComponentSpec } from '@lblod/ember-rdfa-editor/core/model/inline-components/model-inline-component';
 import { isElement } from '@lblod/ember-rdfa-editor/utils/dom-helpers';
 
+declare module '@lblod/ember-rdfa-editor' {
+  export interface InlineComponents {
+    'inline-components-plugin/dropdown': DropdownSpec;
+  }
+}
 export default class DropdownSpec extends InlineComponentSpec {
   matcher = {
     tag: this.tag,

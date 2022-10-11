@@ -6,6 +6,7 @@ import readHtmlNode from '@lblod/ember-rdfa-editor/core/model/readers/html-node-
 import InlineComponentsRegistry from '../inline-components/inline-components-registry';
 import { ModelInlineComponent } from '../inline-components/model-inline-component';
 import { calculateRdfaPrefixes } from '../../../utils/rdfa-utils';
+import { InlineComponentName } from '@lblod/ember-rdfa-editor';
 
 export interface HtmlReaderContextArgs {
   rdfaPrefixes?: Map<string, string>;
@@ -61,7 +62,7 @@ export class HtmlReaderContext {
   addComponentInstance(
     element: HTMLElement,
     children: Node[],
-    componentName: string,
+    componentName: InlineComponentName,
     component: ModelInlineComponent
   ) {
     this.inlineComponentsRegistry.addComponentInstance(

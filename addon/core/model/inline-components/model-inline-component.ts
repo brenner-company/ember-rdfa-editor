@@ -4,19 +4,20 @@ import { DomNodeMatcher } from '../marks/mark';
 import ModelElement from '../nodes/model-element';
 import ModelNode, { DirtyType, ModelNodeType } from '../nodes/model-node';
 import { AttributeSpec, Serializable } from '../../../utils/render-spec';
+import { InlineComponentName } from '@lblod/ember-rdfa-editor';
 
 export type Properties = Record<string, Serializable | undefined>;
 
 export type State = Record<string, Serializable | undefined>;
 export abstract class InlineComponentSpec {
-  name: string;
+  name: InlineComponentName;
   tag: keyof HTMLElementTagNameMap;
 
   abstract matcher: DomNodeMatcher<AttributeSpec>;
   controller: Controller;
 
   constructor(
-    name: string,
+    name: InlineComponentName,
     tag: keyof HTMLElementTagNameMap,
     controller: Controller
   ) {

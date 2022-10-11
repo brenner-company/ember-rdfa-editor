@@ -22,4 +22,7 @@ declare module '@lblod/ember-rdfa-editor' {
   export type CanExecuteArgs<C extends CommandName> = Parameters<
     Commands[C]['canExecute']
   >[1];
+  // eslint-disable-next-line @typescript-eslint/no-empty-interface
+  export interface InlineComponents {}
+  export type InlineComponentName = keyof InlineComponents;
 }
