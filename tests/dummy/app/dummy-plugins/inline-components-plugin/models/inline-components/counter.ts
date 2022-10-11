@@ -33,6 +33,6 @@ export default class CounterSpec extends InlineComponentSpec {
     `;
   }
   constructor(controller: Controller) {
-    super('inline-components-plugin/counter', 'span', controller);
+    super('inline-components-plugin/counter', 'span', controller, true);
   }
 }

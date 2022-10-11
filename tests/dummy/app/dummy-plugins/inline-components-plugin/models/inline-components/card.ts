@@ -30,6 +30,6 @@ export default class CardSpec extends InlineComponentSpec {
     return '';
   }
   constructor(controller: Controller) {
-    super('inline-components-plugin/card', 'span', controller);
+    super('inline-components-plugin/card', 'span', controller, false);
   }
 }

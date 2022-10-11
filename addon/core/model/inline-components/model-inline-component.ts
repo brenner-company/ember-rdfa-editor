@@ -12,6 +12,7 @@ export type State = Record<string, Serializable | undefined>;
 export abstract class InlineComponentSpec {
   name: InlineComponentName;
   tag: keyof HTMLElementTagNameMap;
+  atomic: boolean;
 
   abstract matcher: DomNodeMatcher<AttributeSpec>;
   controller: Controller;
@@ -19,11 +20,13 @@ export abstract class InlineComponentSpec {
   constructor(
     name: InlineComponentName,
     tag: keyof HTMLElementTagNameMap,
-    controller: Controller
+    controller: Controller,
+    atomic = true
   ) {
     this.name = name;
     this.tag = tag;
     this.controller = controller;
+    this.atomic = atomic;
   }
 
   abstract _renderStatic(props?: Properties, state?: State): string;
@@ -97,6 +100,8 @@ export class ModelInlineComponent<
 
   clone(): ModelInlineComponent<A, S> {
     const result = new ModelInlineComponent(this.spec, this.props, this.state);
+    const clonedChildren = this.children.map((c) => c.clone());
+    result.appendChildren(...clonedChildren);
     return result;
   }
 

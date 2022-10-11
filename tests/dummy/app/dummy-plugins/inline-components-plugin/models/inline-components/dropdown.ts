@@ -28,6 +28,6 @@ export default class DropdownSpec extends InlineComponentSpec {
     `;
   }
   constructor(controller: Controller) {
-    super('inline-components-plugin/dropdown', 'span', controller);
+    super('inline-components-plugin/dropdown', 'span', controller, true);
   }
 }
