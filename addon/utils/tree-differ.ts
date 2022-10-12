@@ -16,8 +16,10 @@ export default function computeDifference(
     difference.changes = changes;
   }
   if (
-    ModelNode.isModelElement(oldDocument) &&
-    ModelNode.isModelElement(newDocument) &&
+    (ModelNode.isModelElement(oldDocument) ||
+      ModelNode.isModelInlineComponent(oldDocument)) &&
+    (ModelNode.isModelElement(newDocument) ||
+      ModelNode.isModelInlineComponent(newDocument)) &&
     !changes.has('content')
   ) {
     for (let i = 0; i < oldDocument.length; i++) {
