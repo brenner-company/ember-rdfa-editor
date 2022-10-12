@@ -111,15 +111,33 @@ export class ModelInlineComponent<
 
   diff(other: ModelNode): Set<DirtyType> {
     const dirtiness: Set<DirtyType> = new Set();
-    if (
-      !ModelNode.isModelInlineComponent(other) ||
-      this.type !== other.type ||
-      this.spec !== other.spec ||
-      this.props !== other.props
-    ) {
+    if (!ModelNode.isModelInlineComponent(other)) {
       dirtiness.add('node');
+      dirtiness.add('content');
+    } else {
+      if (
+        this.type !== other.type ||
+        this.spec !== other.spec ||
+        this.props !== other.props
+      ) {
+        dirtiness.add('node');
+      }
+      if (this.length !== other.length) {
+        dirtiness.add('content');
+      } else {
+        for (let i = 0; i < this.length; i++) {
+          const child1 = this.children[i];
+          const child2 = other.children[i];
+          if (ModelNode.isModelText(child1) || ModelNode.isModelText(child2)) {
+            const diff = child1.diff(child2);
+            if (diff.has('mark') || diff.has('node')) {
+              dirtiness.add('content');
+              break;
+            }
+          }
+        }
+      }
     }
-
     return dirtiness;
   }
 }
