@@ -124,7 +124,7 @@ export function isLeaf(node: Node): boolean {
   return node.childNodes.length === 0;
 }
 
-export function isInlineComponent(node: Node): boolean {
+export function isInlineComponent(node: Node): node is HTMLElement {
   return isElement(node) && node.classList.contains('inline-component');
 }
 
@@ -696,6 +696,9 @@ function domNodeFromPath(
     index = modelOffsetToDomOffset(state, index, cur) ?? 0;
     if (isElement(cur)) {
       cur = cur.childNodes[index];
+      if (isInlineComponent(cur)) {
+        cur = cur.querySelector(INLINE_COMPONENT_CHILDREN_SELECTOR) ?? cur;
+      }
     } else {
       return cur;
     }
@@ -710,6 +713,10 @@ function domNodeFromPath(
             index -= leafs.length;
           } else {
             cur = leafs[index];
+            if (isInlineComponent(cur)) {
+              cur =
+                cur.querySelector(INLINE_COMPONENT_CHILDREN_SELECTOR) ?? cur;
+            }
             break;
           }
           //search in subchildren
@@ -718,6 +725,9 @@ function domNodeFromPath(
         }
         if (index === -1) {
           cur = child;
+          if (isInlineComponent(cur)) {
+            cur = cur.querySelector(INLINE_COMPONENT_CHILDREN_SELECTOR) ?? cur;
+          }
           break;
         }
       }
@@ -822,7 +832,10 @@ export function modelPosToDomPos(
   let cur: ModelNode = state.document;
   const indexPath = [];
   for (const offset of path) {
-    if (ModelNode.isModelElement(cur)) {
+    if (
+      ModelNode.isModelElement(cur) ||
+      ModelNode.isModelInlineComponent(cur)
+    ) {
       let index;
       if (offset === 0) {
         index = 0;
