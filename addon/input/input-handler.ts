@@ -6,11 +6,7 @@ import {
 } from '@lblod/ember-rdfa-editor/input/insert';
 import { mapKeyEvent } from '@lblod/ember-rdfa-editor/input/keymap';
 import SelectionReader from '@lblod/ember-rdfa-editor/core/model/readers/selection-reader';
-import {
-  getWindowSelection,
-  isInlineComponent,
-  isPartOfInlineComponent,
-} from '@lblod/ember-rdfa-editor/utils/dom-helpers';
+import { getWindowSelection } from '@lblod/ember-rdfa-editor/utils/dom-helpers';
 import Controller from '../core/controllers/controller';
 import { NotImplementedError } from '../utils/errors';
 import { createLogger, Logger } from '../utils/logging-utils';
@@ -257,49 +253,48 @@ export class EditorInputHandler implements InputHandler {
   };
 
   handleMutation = (
-    mutations: MutationRecord[],
+    _mutations: MutationRecord[],
     _observer: MutationObserver
   ) => {
-    mutations = mutations.filter(
-      (mutation) =>
-        !isPartOfInlineComponent(mutation.target) &&
-        !isInlineComponent(mutation.target)
-    );
-    if (!mutations.length) {
-      return;
-    }
-    const tr = this.inputController.currentState.createTransaction();
-    for (const mutation of mutations) {
-      this.logger(mutation);
-      switch (mutation.type) {
-        case 'characterData': {
-          const oldNode = viewToModel(
-            tr.workingCopy,
-            this.domRoot,
-            mutation.target
-          );
-          tr.insertText({
-            range: ModelRange.fromInNode(oldNode),
-            text: mutation.target.textContent ?? '',
-          });
-
-          break;
-        }
-        case 'attributes': {
-          break;
-        }
-        case 'childList': {
-          this.replaceChildren(tr, mutation.target);
-          break;
-        }
-      }
-    }
-    // if (finalRange) {
-    //   finalRange.collapse();
-    //   tr.selectRange(finalRange);
+    // mutations = mutations.filter(
+    //   (mutation) =>
+    //     !isPartOfInlineComponent(mutation.target) &&
+    //     !isInlineComponent(mutation.target)
+    // );
+    // if (!mutations.length) {
+    //   return;
     // }
-    tr.setSelectionFromView(this.inputController.view);
-    this.inputController.view.stateOnlyDispatch(tr);
+    // const tr = this.inputController.currentState.createTransaction();
+    // for (const mutation of mutations) {
+    //   this.logger(mutation);
+    //   switch (mutation.type) {
+    //     case 'characterData': {
+    //       const oldNode = viewToModel(
+    //         tr.workingCopy,
+    //         this.domRoot,
+    //         mutation.target
+    //       );
+    //       tr.insertText({
+    //         range: ModelRange.fromInNode(oldNode),
+    //         text: mutation.target.textContent ?? '',
+    //       });
+    //       break;
+    //     }
+    //     case 'attributes': {
+    //       break;
+    //     }
+    //     case 'childList': {
+    //       this.replaceChildren(tr, mutation.target);
+    //       break;
+    //     }
+    //   }
+    // }
+    // // if (finalRange) {
+    // //   finalRange.collapse();
+    // //   tr.selectRange(finalRange);
+    // // }
+    // tr.setSelectionFromView(this.inputController.view);
+    // this.inputController.view.stateOnlyDispatch(tr);
   };
 
   private replaceChildren(tr: Transaction, node: Node) {
