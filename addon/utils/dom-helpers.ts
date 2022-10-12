@@ -651,7 +651,11 @@ export function domPosToModelPos(
     cur = state.document.children[modelIndexPath[0]];
     offsetPath.push(state.document.indexToOffset(modelIndexPath[0]));
     for (const index of modelIndexPath.slice(1)) {
-      if (ModelNode.isModelElement(cur) && !cur.isLeaf) {
+      if (
+        (ModelNode.isModelElement(cur) ||
+          ModelNode.isModelInlineComponent(cur)) &&
+        !cur.isLeaf
+      ) {
         offsetPath.push(cur.indexToOffset(index));
       } else {
         break;

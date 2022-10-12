@@ -106,7 +106,7 @@ export class ModelInlineComponent<
   }
 
   get isLeaf() {
-    return true;
+    return false;
   }
 
   diff(other: ModelNode): Set<DirtyType> {
