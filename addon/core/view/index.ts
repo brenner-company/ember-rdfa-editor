@@ -2,7 +2,7 @@ import State from '@lblod/ember-rdfa-editor/core/state';
 import SelectionWriter from '@lblod/ember-rdfa-editor/core/model/writers/selection-writer';
 import ModelNode from '../model/nodes/model-node';
 import ModelPosition from '../model/model-position';
-import computeDifference, { Difference } from '../../utils/tree-differ';
+import { Difference } from '../../utils/tree-differ';
 import HtmlWriter from '../model/writers/html-writer';
 import {
   domPosToModelPos,
@@ -145,10 +145,7 @@ export class EditorView implements View {
 
     let differences: Difference[] = [];
     if (calculateDiffs || listenersAddedSteps) {
-      differences = computeDifference(
-        this.currentState.document,
-        newState.document
-      );
+      differences = transaction.getDifferences();
     }
     this.currentState = newState;
     this.update(this.currentState, differences, transaction.shouldFocus);

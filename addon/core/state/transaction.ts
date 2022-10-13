@@ -42,6 +42,7 @@ import PluginStep from './steps/plugin-step';
 import Controller, { WidgetSpec } from '../controllers/controller';
 import { InlineComponentSpec } from '../model/inline-components/model-inline-component';
 import MapUtils from '@lblod/ember-rdfa-editor/utils/map-utils';
+import computeDifference, { Difference } from '../../utils/tree-differ';
 
 interface TextInsertion {
   range: ModelRange;
@@ -69,6 +70,8 @@ export default class Transaction {
   // TODO: improve this
   rdfInvalid = false;
   marksInvalid = false;
+  differencesInvalid = false;
+  private _differences: Difference[] = [];
   logger = createLogger('transaction');
   private _commandCache?: CommandExecutor;
 
@@ -153,6 +156,16 @@ export default class Transaction {
       this.marksInvalid = false;
     }
     return this._workingCopy.marksManager;
+  }
+
+  getDifferences() {
+    if (this.differencesInvalid) {
+      this._differences = computeDifference(
+        this.initialState.document,
+        this.workingCopy.document
+      );
+    }
+    return this._differences;
   }
 
   async setPlugins(configs: ResolvedPluginConfig[], view: View): Promise<void> {
@@ -361,6 +374,7 @@ export default class Transaction {
     if (isOperationStep(step)) {
       this.rdfInvalid = true;
       this.marksInvalid = true;
+      this.differencesInvalid = true;
     }
   }
 
