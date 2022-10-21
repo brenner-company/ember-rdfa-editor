@@ -109,7 +109,7 @@ export class ViewController implements Controller {
     this.view.dispatch(tr);
   }
 
-  getComponentInstances(filter?: { componentName: string }) {
+  getComponentInstances(_filter?: { componentName: string }) {
     throw new NotImplementedError();
   }
 

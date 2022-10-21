@@ -161,6 +161,7 @@ export class EditorView implements View {
     }
     this.currentState = newState;
     this.update(this.currentState, differences, transaction.shouldFocus);
+    this.currentState.inlineComponentsManager.clean();
     this.currentState.transactionDispatchListeners.forEach((listener) => {
       listener(transaction);
     });

@@ -63,6 +63,7 @@ import {
 } from '@lblod/ember-rdfa-editor/core/model/readers/html-reader';
 import MarksManager from '../model/marks/marks-manager';
 import RemoveMarkFromNodeCommand from '@lblod/ember-rdfa-editor/commands/remove-mark-from-node-command';
+import InlineComponentsManager from '../model/inline-components/inline-components-manager';
 
 export interface StateArgs {
   document: ModelElement;
@@ -74,6 +75,7 @@ export interface StateArgs {
   marksRegistry: MarksRegistry;
   marksManager: MarksManager;
   inlineComponentsRegistry: InlineComponentsRegistry;
+  inlineComponentsManager: InlineComponentsManager;
   previousState?: State | null;
   datastore: Datastore;
   eventBus: EventBus;
@@ -106,6 +108,7 @@ export default interface State {
   marksRegistry: MarksRegistry;
   marksManager: MarksManager;
   inlineComponentsRegistry: InlineComponentsRegistry;
+  inlineComponentsManager: InlineComponentsManager;
   previousState: State | null;
   widgetMap: Map<WidgetLocation, InternalWidgetSpec[]>;
   datastore: Datastore;
@@ -132,6 +135,7 @@ export class SayState implements State {
   marksRegistry: MarksRegistry;
   marksManager: MarksManager;
   inlineComponentsRegistry: InlineComponentsRegistry;
+  inlineComponentsManager: InlineComponentsManager;
   eventBus: EventBus;
   transactionStepListeners: Set<TransactionStepListener>;
   transactionDispatchListeners: Set<TransactionDispatchListener>;
@@ -165,6 +169,7 @@ export class SayState implements State {
     this.marksRegistry = args.marksRegistry;
     this.marksManager = args.marksManager;
     this.inlineComponentsRegistry = args.inlineComponentsRegistry;
+    this.inlineComponentsManager = args.inlineComponentsManager;
     this.previousState = previousState;
     this.marksRegistry.registerMark(boldMarkSpec);
     this.marksRegistry.registerMark(italicMarkSpec);
@@ -259,6 +264,7 @@ export function emptyState(eventBus = new EventBus()): State {
     marksRegistry: new MarksRegistry(),
     marksManager: new MarksManager(),
     inlineComponentsRegistry: new InlineComponentsRegistry(),
+    inlineComponentsManager: new InlineComponentsManager(),
     widgetMap: new Map<WidgetLocation, InternalWidgetSpec[]>(),
     datastore: EditorStore.empty(),
     pathFromDomRoot: [],
@@ -278,6 +284,7 @@ export function cloneState(state: State): State {
     marksRegistry: state.marksRegistry,
     marksManager: state.marksManager,
     inlineComponentsRegistry: state.inlineComponentsRegistry,
+    inlineComponentsManager: state.inlineComponentsManager,
     plugins: [...state.plugins],
     commands: state.commands,
     selection: selectionClone,
@@ -308,6 +315,7 @@ export function createState({
   config = new Map(),
   marksRegistry = new MarksRegistry(),
   inlineComponentsRegistry = new InlineComponentsRegistry(),
+  inlineComponentsManager = new InlineComponentsManager(),
   widgetMap = new Map(),
   eventBus = new EventBus(),
   pathFromDomRoot = [],
@@ -325,6 +333,7 @@ export function createState({
     marksRegistry,
     marksManager: MarksManager.fromDocument(document),
     inlineComponentsRegistry,
+    inlineComponentsManager,
     widgetMap,
     eventBus,
     datastore: EditorStore.fromParse({

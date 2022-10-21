@@ -1,3 +1,4 @@
+import Controller from '@lblod/ember-rdfa-editor/core/controllers/controller';
 import { InlineComponentSpec } from '@lblod/ember-rdfa-editor/core/model/inline-components/model-inline-component';
 import { isElement } from '@lblod/ember-rdfa-editor/utils/dom-helpers';
 import { hbs } from 'ember-cli-htmlbars';
@@ -9,7 +10,6 @@ declare module '@lblod/ember-rdfa-editor' {
   }
 }
 export default class DropdownSpec extends InlineComponentSpec {
-  name = 'dropdown';
   tag: keyof HTMLElementTagNameMap = 'span';
   template: TemplateFactory = hbs`<InlineComponentsPlugin::Dropdown/>`;
   atomic = true;
@@ -31,5 +31,9 @@ export default class DropdownSpec extends InlineComponentSpec {
     return `
       <p>Dropdown</p>
     `;
+  }
+
+  constructor(controller: Controller) {
+    super(controller, 'dropdown');
   }
 }

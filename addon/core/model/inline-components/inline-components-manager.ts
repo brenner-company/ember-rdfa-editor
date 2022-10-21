@@ -8,7 +8,7 @@ export type ActiveComponentEntry = {
   node: HTMLElement;
   emberComponentInstance: Component;
 };
-export default class InlineComponentsRegistry {
+export default class InlineComponentsManager {
   activeComponents: Map<string, ActiveComponentEntry[]>;
 
   constructor(activeComponents?: Map<string, ActiveComponentEntry[]>) {

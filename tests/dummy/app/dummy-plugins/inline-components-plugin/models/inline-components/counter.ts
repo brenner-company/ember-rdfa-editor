@@ -1,3 +1,4 @@
+import Controller from '@lblod/ember-rdfa-editor/core/controllers/controller';
 import {
   InlineComponentSpec,
   Properties,
@@ -14,7 +15,6 @@ declare module '@lblod/ember-rdfa-editor' {
 export default class CounterSpec extends InlineComponentSpec {
   tag: keyof HTMLElementTagNameMap = 'span';
   atomic = true;
-  name = 'counter';
   template = hbs`
       <InlineComponentsPlugin::Counter @componentController={{this.componentController}}/>
   `;
@@ -36,5 +36,9 @@ export default class CounterSpec extends InlineComponentSpec {
   _renderStatic(props?: Properties, state?: State): string {
     const count = (state?.count as number) || 0;
     return `<p>${count}</p>`;
+  }
+
+  constructor(controller: Controller) {
+    super(controller, 'counter');
   }
 }

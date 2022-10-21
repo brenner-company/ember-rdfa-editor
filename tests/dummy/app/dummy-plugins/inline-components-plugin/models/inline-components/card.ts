@@ -1,3 +1,4 @@
+import Controller from '@lblod/ember-rdfa-editor/core/controllers/controller';
 import {
   InlineComponentSpec,
   Properties,
@@ -13,7 +14,6 @@ declare module '@lblod/ember-rdfa-editor' {
   }
 }
 export default class CardSpec extends InlineComponentSpec {
-  name = 'card';
   tag: keyof HTMLElementTagNameMap = 'span';
   template: TemplateFactory = hbs`<InlineComponentsPlugin::Card/>`;
   atomic = true;
@@ -37,5 +37,9 @@ export default class CardSpec extends InlineComponentSpec {
               <p>Subtitle</p>
               <span data-slot />
             </div>`;
+  }
+
+  constructor(controller: Controller) {
+    super(controller, 'card');
   }
 }

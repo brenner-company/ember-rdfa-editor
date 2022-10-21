@@ -7,7 +7,7 @@ import { AttributeSpec, Serializable } from '../../../utils/render-spec';
 import { TemplateFactory } from 'htmlbars-inline-precompile';
 import InlineComponentController from './inline-component-controller';
 import { v4 as uuidv4 } from 'uuid';
-import { EmberComponent } from '@lblod/ember-rdfa-editor';
+import { EmberComponent, InlineComponentName } from '@lblod/ember-rdfa-editor';
 // eslint-disable-next-line ember/no-classic-components
 import Component from '@ember/component';
 
@@ -15,16 +15,17 @@ export type Properties = Record<string, Serializable | undefined>;
 
 export type State = Record<string, Serializable | undefined>;
 export abstract class InlineComponentSpec {
-  abstract name: string;
+  name: InlineComponentName;
+  controller: Controller;
   abstract tag: keyof HTMLElementTagNameMap;
   abstract template: TemplateFactory;
   abstract atomic: boolean;
 
   abstract matcher: DomNodeMatcher<AttributeSpec>;
-  controller: Controller;
 
-  constructor(controller: Controller) {
+  constructor(controller: Controller, name: InlineComponentName) {
     this.controller = controller;
+    this.name = name;
   }
 
   abstract _renderStatic(props?: Properties, state?: State): string;
@@ -88,7 +89,10 @@ export class ModelInlineComponent<
   get spec() {
     return this._spec;
   }
-  write(dynamic = true): HTMLElement {
+  write(dynamic = true): {
+    element: HTMLElement;
+    emberComponent?: EmberComponent;
+  } {
     const node = createWrapper(this.spec, this.props, this.state);
     if (dynamic) {
       const instance = window.__APPLICATION;
@@ -109,10 +113,16 @@ export class ModelInlineComponent<
       ) as EmberComponent;
       // eslint-disable-next-line @typescript-eslint/no-unsafe-call
       component.appendTo(node);
+      return {
+        element: node,
+        emberComponent: component,
+      };
     } else {
       node.innerHTML = this.spec._renderStatic(this.props, this.state);
+      return {
+        element: node,
+      };
     }
-    return node;
   }
 
   clone(): ModelInlineComponent<A, S> {

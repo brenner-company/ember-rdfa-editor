@@ -56,11 +56,17 @@ export default class HtmlWriter {
         throw new WriterError(
           'corresponding view to modelInlineComponent is not an HTML Element'
         );
-      const updatedView = this.parseInlineComponent(node);
+      const { element, emberComponent } = this.parseInlineComponent(node);
+      const updatedView = element;
       currentView.replaceWith(updatedView);
       const parsedChildren = this.parseChildren(node.children, state);
       const childrenWrapper = updatedView.querySelector('[data-slot]');
       childrenWrapper?.replaceChildren(...parsedChildren);
+      state.inlineComponentsManager.addComponentInstance(
+        node,
+        updatedView,
+        emberComponent!
+      );
     }
   }
   private parseNode(modelNode: ModelNode): Node {
@@ -69,7 +75,7 @@ export default class HtmlWriter {
     } else if (ModelNode.isModelText(modelNode)) {
       return this.parseText(modelNode);
     } else if (ModelNode.isModelInlineComponent(modelNode)) {
-      return this.parseInlineComponent(modelNode);
+      return this.parseInlineComponent(modelNode).element;
     } else {
       throw new NotImplementedError('Unsupported node type');
     }
@@ -82,11 +88,17 @@ export default class HtmlWriter {
     ) {
       return this.parseNode(modelNode);
     } else if (ModelNode.isModelInlineComponent(modelNode)) {
-      const result = this.parseNode(modelNode) as HTMLElement;
+      const { element, emberComponent } = this.parseInlineComponent(modelNode);
+      const updatedView = element;
       const parsedChildren = this.parseChildren(modelNode.children, state);
-      const childrenWrapper = result.querySelector('[data-slot]');
+      const childrenWrapper = updatedView.querySelector('[data-slot]');
       childrenWrapper?.replaceChildren(...parsedChildren);
-      return result;
+      state.inlineComponentsManager.addComponentInstance(
+        modelNode,
+        updatedView,
+        emberComponent!
+      );
+      return element;
     } else {
       const result = this.parseNode(modelNode) as HTMLElement;
       const children = (modelNode as ModelElement).children;
@@ -162,9 +174,12 @@ export default class HtmlWriter {
   }
 
   private parseInlineComponent(component: ModelInlineComponent) {
-    const node = writeHtmlInlineComponent(component, true);
-    if (isElement(node)) {
-      return node;
+    const { element, emberComponent } = writeHtmlInlineComponent(
+      component,
+      true
+    );
+    if (isElement(element)) {
+      return { element, emberComponent };
     } else {
       throw new NotImplementedError(
         'Inline component should have an htmlelement as root'

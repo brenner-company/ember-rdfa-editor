@@ -22,6 +22,7 @@ import { Difference } from '@lblod/ember-rdfa-editor/utils/tree-differ';
 import EventBus from '@lblod/ember-rdfa-editor/utils/event-bus';
 import hbs from 'htmlbars-inline-precompile';
 import MarksManager from '@lblod/ember-rdfa-editor/core/model/marks/marks-manager';
+import InlineComponentsManager from '@lblod/ember-rdfa-editor/core/model/inline-components/inline-components-manager';
 
 /**
  * Utility to get the editor element in a type-safe way
@@ -82,6 +83,7 @@ export function testState({
   marksRegistry = new MarksRegistry(),
   marksManager = new MarksManager(),
   inlineComponentsRegistry = new InlineComponentsRegistry(),
+  inlineComponentsManager = new InlineComponentsManager(),
   plugins = [],
   selection = new ModelSelection(),
 }: OptionalStateArgs = {}): State {
@@ -96,6 +98,7 @@ export function testState({
     marksRegistry,
     marksManager,
     inlineComponentsRegistry,
+    inlineComponentsManager,
     plugins,
     selection,
     baseIRI,
