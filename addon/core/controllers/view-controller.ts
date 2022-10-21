@@ -25,6 +25,7 @@ import {
 import Controller from '@lblod/ember-rdfa-editor/core/controllers/controller';
 import { toFilterSkipFalse } from '@lblod/ember-rdfa-editor/utils/model-tree-walker';
 import { MarkInstanceEntry } from '../model/marks/marks-manager';
+import { NotImplementedError } from '@lblod/ember-rdfa-editor/utils/errors';
 
 export interface EditorUtils {
   toFilterSkipFalse: typeof toFilterSkipFalse;
@@ -109,9 +110,7 @@ export class ViewController implements Controller {
   }
 
   getComponentInstances(filter?: { componentName: string }) {
-    return this.currentState.inlineComponentsRegistry.getComponentInstances(
-      filter
-    );
+    throw new NotImplementedError();
   }
 
   createModelElement(type: ElementType): ModelElement {

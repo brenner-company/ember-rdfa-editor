@@ -57,21 +57,10 @@ export default class HtmlWriter {
           'corresponding view to modelInlineComponent is not an HTML Element'
         );
       const updatedView = this.parseInlineComponent(node);
+      currentView.replaceWith(updatedView);
       const parsedChildren = this.parseChildren(node.children, state);
-      if (state.inlineComponentsRegistry.activeComponents.has(node)) {
-        state.inlineComponentsRegistry.updateComponentInstanceNode(
-          node,
-          updatedView,
-          parsedChildren
-        );
-      } else {
-        state.inlineComponentsRegistry.addComponentInstance(
-          updatedView,
-          parsedChildren,
-          node.spec.name,
-          node
-        );
-      }
+      const childrenWrapper = updatedView.querySelector('[data-slot]');
+      childrenWrapper?.replaceChildren(...parsedChildren);
     }
   }
   private parseNode(modelNode: ModelNode): Node {
@@ -95,20 +84,8 @@ export default class HtmlWriter {
     } else if (ModelNode.isModelInlineComponent(modelNode)) {
       const result = this.parseNode(modelNode) as HTMLElement;
       const parsedChildren = this.parseChildren(modelNode.children, state);
-      if (state.inlineComponentsRegistry.activeComponents.has(modelNode)) {
-        state.inlineComponentsRegistry.updateComponentInstanceNode(
-          modelNode,
-          result,
-          parsedChildren
-        );
-      } else {
-        state.inlineComponentsRegistry.addComponentInstance(
-          result,
-          parsedChildren,
-          modelNode.spec.name,
-          modelNode
-        );
-      }
+      const childrenWrapper = result.querySelector('[data-slot]');
+      childrenWrapper?.replaceChildren(...parsedChildren);
       return result;
     } else {
       const result = this.parseNode(modelNode) as HTMLElement;

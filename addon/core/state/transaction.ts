@@ -124,11 +124,6 @@ export default class Transaction {
       this._workingCopy.document = documentClone;
       this._workingCopy.selection =
         this.initialState.selection.clone(documentClone);
-      this._workingCopy.inlineComponentsRegistry =
-        this.initialState.inlineComponentsRegistry.clone(
-          this.initialState.document,
-          documentClone
-        );
       this.rdfInvalid = true;
       this.marksInvalid = true;
     }

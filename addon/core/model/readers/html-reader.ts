@@ -58,20 +58,6 @@ export class HtmlReaderContext {
   matchInlineComponent(node: Node) {
     return this.inlineComponentsRegistry.matchInlineComponentSpec(node);
   }
-
-  addComponentInstance(
-    element: HTMLElement,
-    children: Node[],
-    componentName: InlineComponentName,
-    component: ModelInlineComponent
-  ) {
-    this.inlineComponentsRegistry.addComponentInstance(
-      element,
-      children,
-      componentName,
-      component
-    );
-  }
 }
 
 /**

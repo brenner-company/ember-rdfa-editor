@@ -4,39 +4,36 @@ import { DomNodeMatcher } from '../marks/mark';
 import ModelElement from '../nodes/model-element';
 import ModelNode, { DirtyType, ModelNodeType } from '../nodes/model-node';
 import { AttributeSpec, Serializable } from '../../../utils/render-spec';
-import { InlineComponentName } from '@lblod/ember-rdfa-editor';
+import { TemplateFactory } from 'htmlbars-inline-precompile';
+import InlineComponentController from './inline-component-controller';
+import { v4 as uuidv4 } from 'uuid';
+import { EmberComponent } from '@lblod/ember-rdfa-editor';
+// eslint-disable-next-line ember/no-classic-components
+import Component from '@ember/component';
 
 export type Properties = Record<string, Serializable | undefined>;
 
 export type State = Record<string, Serializable | undefined>;
 export abstract class InlineComponentSpec {
-  name: InlineComponentName;
-  tag: keyof HTMLElementTagNameMap;
-  atomic: boolean;
+  abstract name: string;
+  abstract tag: keyof HTMLElementTagNameMap;
+  abstract template: TemplateFactory;
+  abstract atomic: boolean;
 
   abstract matcher: DomNodeMatcher<AttributeSpec>;
   controller: Controller;
 
-  constructor(
-    name: InlineComponentName,
-    tag: keyof HTMLElementTagNameMap,
-    controller: Controller,
-    atomic = true
-  ) {
-    this.name = name;
-    this.tag = tag;
+  constructor(controller: Controller) {
     this.controller = controller;
-    this.atomic = atomic;
   }
 
   abstract _renderStatic(props?: Properties, state?: State): string;
 }
 
-function render(
+function createWrapper(
   spec: InlineComponentSpec,
   props?: Properties,
-  state?: State,
-  dynamic = true
+  state?: State
 ) {
   const node = document.createElement(spec.tag);
   if (props) {
@@ -47,9 +44,6 @@ function render(
   }
   node.contentEditable = 'false';
   node.classList.add('inline-component', spec.name);
-  if (!dynamic) {
-    node.innerHTML = spec._renderStatic(props, state);
-  }
   return node;
 }
 
@@ -95,7 +89,30 @@ export class ModelInlineComponent<
     return this._spec;
   }
   write(dynamic = true): HTMLElement {
-    return render(this.spec, this.props, this.state, dynamic);
+    const node = createWrapper(this.spec, this.props, this.state);
+    if (dynamic) {
+      const instance = window.__APPLICATION;
+      const componentName = `${this.spec.name}-${uuidv4()}`;
+      instance?.register(
+        `component:${componentName}`,
+        // eslint-disable-next-line ember/no-classic-classes, ember/require-tagless-components
+        Component.extend({
+          layout: this.spec.template,
+          tagName: '',
+          // eslint-disable-next-line ember/avoid-leaking-state-in-ember-objects
+          componentController: new InlineComponentController(this),
+          editorController: this.spec.controller,
+        })
+      );
+      const component = instance?.lookup(
+        `component:${componentName}`
+      ) as EmberComponent;
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+      component.appendTo(node);
+    } else {
+      node.innerHTML = this.spec._renderStatic(this.props, this.state);
+    }
+    return node;
   }
 
   clone(): ModelInlineComponent<A, S> {

@@ -29,6 +29,7 @@ import { Serializable } from '@lblod/ember-rdfa-editor/utils/render-spec';
 import Transaction from '@lblod/ember-rdfa-editor/core/state/transaction';
 import { isPluginStep } from '@lblod/ember-rdfa-editor/core/state/steps/step';
 import { ViewController } from '@lblod/ember-rdfa-editor/core/controllers/view-controller';
+import { getOwner } from '@ember/application';
 
 export type PluginConfig =
   | string
@@ -82,7 +83,6 @@ export default class RdfaEditor extends Component<RdfaEditorArgs> {
   @tracked sidebarWidgets: InternalWidgetSpec[] = [];
   @tracked insertSidebarWidgets: InternalWidgetSpec[] = [];
   @tracked toolbarController: Controller | null = null;
-  @tracked inlineComponentController: Controller | null = null;
 
   @tracked editorLoading = true;
   private owner: ApplicationInstance;
@@ -127,12 +127,9 @@ export default class RdfaEditor extends Component<RdfaEditorArgs> {
     this.controller = new ViewController('rdfaEditorComponent', view);
     this.updateWidgets();
     this.toolbarController = new ViewController('toolbar', view);
-    this.inlineComponentController = new ViewController(
-      'inline-component-manager',
-      view
-    );
     const rdfaDocument = new RdfaDocumentController('host', view);
     window.__EDITOR = new RdfaDocumentController('debug', view);
+    window.__APPLICATION = getOwner(this)!;
     this.updateConfig('pasteBehaviour', this.pasteBehaviour);
     if (this.args.rdfaEditorInit) {
       this.args.rdfaEditorInit(rdfaDocument);

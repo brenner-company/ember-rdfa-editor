@@ -1,17 +1,23 @@
-import Controller from '@lblod/ember-rdfa-editor/core/controllers/controller';
 import {
   InlineComponentSpec,
   Properties,
   State,
 } from '@lblod/ember-rdfa-editor/core/model/inline-components/model-inline-component';
 import { isElement } from '@lblod/ember-rdfa-editor/utils/dom-helpers';
+import { hbs } from 'ember-cli-htmlbars';
 
 declare module '@lblod/ember-rdfa-editor' {
   export interface InlineComponents {
-    'inline-components-plugin/counter': CounterSpec;
+    counter: CounterSpec;
   }
 }
 export default class CounterSpec extends InlineComponentSpec {
+  tag: keyof HTMLElementTagNameMap = 'span';
+  atomic = true;
+  name = 'counter';
+  template = hbs`
+      <InlineComponentsPlugin::Counter @componentController={{this.componentController}}/>
+  `;
   matcher = {
     tag: this.tag,
     attributeBuilder: (node: Node) => {
@@ -26,13 +32,9 @@ export default class CounterSpec extends InlineComponentSpec {
       return null;
     },
   };
-  _renderStatic(_props: Properties, state: State) {
-    const count = state.count?.toString() || '0';
-    return `
-      <p>${count}</p>
-    `;
-  }
-  constructor(controller: Controller) {
-    super('inline-components-plugin/counter', 'span', controller, true);
+
+  _renderStatic(props?: Properties, state?: State): string {
+    const count = (state?.count as number) || 0;
+    return `<p>${count}</p>`;
   }
 }

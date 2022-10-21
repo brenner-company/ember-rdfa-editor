@@ -34,14 +34,8 @@ export default function readHtmlInlineComponent(
       component.appendChildren(...parsedChildren);
     }
   }
-  const childNodes = childrenWrapper?.childNodes
-    ? [...childrenWrapper.childNodes.values()]
-    : [];
-  context.addComponentInstance(
-    element,
-    childNodes,
-    component.spec.name,
-    component
-  );
+  // const childNodes = childrenWrapper?.childNodes
+  //   ? [...childrenWrapper.childNodes.values()]
+  //   : [];
   return [component];
 }

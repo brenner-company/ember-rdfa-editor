@@ -19,11 +19,9 @@ export default class InlineComponentController<
   S extends State = State
 > {
   private _model: ModelInlineComponent<A, S>;
-  private _node: HTMLElement;
 
-  constructor(model: ModelInlineComponent<A, S>, node: HTMLElement) {
+  constructor(model: ModelInlineComponent<A, S>) {
     this._model = model;
-    this._node = node;
   }
   get props() {
     return this._model.props;
@@ -39,7 +37,6 @@ export default class InlineComponentController<
 
   setStateProperty(property: keyof S, value: Serializable) {
     this._model.setStateProperty(property, value);
-    this._node.dataset['__state'] = JSON.stringify(this._model.state);
   }
 
   getStateProperty(property: keyof S) {

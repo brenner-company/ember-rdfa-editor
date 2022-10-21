@@ -19,6 +19,19 @@ import {
 import { ViewController } from '@lblod/ember-rdfa-editor/core/controllers/view-controller';
 import { ResolvedPluginConfig } from '@lblod/ember-rdfa-editor/components/rdfa/rdfa-editor';
 
+export type Owner = {
+  register(
+    fullName: `${string}:${string}`,
+    factory: unknown,
+    options: unknown | undefined
+  ): void;
+  lookup(
+    fullName: `${string}:${string}`,
+    options?: unknown | undefined
+  ): unknown;
+  factoryFor(fullName: `${string}:${string}`): unknown;
+};
+
 export type Dispatch = (transaction: Transaction) => void;
 
 export interface ViewArgs {
@@ -42,7 +55,6 @@ export interface View {
    * The modelstate represented by the current html document
    * */
   currentState: State;
-
   /**
    * Get the domNode that corresponds to the given modelNode
    * State is needed because active configuration may influence the result
@@ -170,7 +182,6 @@ export class EditorView implements View {
       writeCounts++;
     });
     this.logger(`Wrote ${writeCounts} times to document`);
-    state.inlineComponentsRegistry.clean();
     const selectionWriter = new SelectionWriter();
     selectionWriter.write(state, this.domRoot, state.selection);
     this.logger('Wrote selection:', state.selection);
@@ -229,7 +240,11 @@ export function createView({
   dispatch,
   initialState,
 }: ViewArgs): View {
-  const result = new EditorView({ domRoot, dispatch, initialState });
+  const result = new EditorView({
+    domRoot,
+    dispatch,
+    initialState,
+  });
   return result;
 }
 
@@ -250,7 +265,11 @@ export async function createEditorView({
   dispatch,
 }: EditorArgs): Promise<View> {
   const state = initialState;
-  const view = createView({ domRoot, dispatch, initialState: state });
+  const view = createView({
+    domRoot,
+    dispatch,
+    initialState: state,
+  });
   const tr = view.currentState.createTransaction();
   await tr.setPlugins(plugins, view);
   view.dispatch(tr);

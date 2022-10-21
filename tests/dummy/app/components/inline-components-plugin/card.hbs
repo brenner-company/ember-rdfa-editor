@@ -7,5 +7,7 @@
       Subtitle
     </p>
   </c.header>
-  <c.content>{{yield}}</c.content>
+  <c.content>
+    <InlineComponents::Slot @contenteditable="true"/>
+  </c.content>
 </AuCard>

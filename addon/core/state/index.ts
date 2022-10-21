@@ -277,10 +277,7 @@ export function cloneState(state: State): State {
     document: documentClone,
     marksRegistry: state.marksRegistry,
     marksManager: state.marksManager,
-    inlineComponentsRegistry: state.inlineComponentsRegistry.clone(
-      state.document,
-      documentClone
-    ),
+    inlineComponentsRegistry: state.inlineComponentsRegistry,
     plugins: [...state.plugins],
     commands: state.commands,
     selection: selectionClone,

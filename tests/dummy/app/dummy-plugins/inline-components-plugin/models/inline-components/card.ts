@@ -1,17 +1,22 @@
-import Controller from '@lblod/ember-rdfa-editor/core/controllers/controller';
 import {
   InlineComponentSpec,
   Properties,
   State,
 } from '@lblod/ember-rdfa-editor/core/model/inline-components/model-inline-component';
 import { isElement } from '@lblod/ember-rdfa-editor/utils/dom-helpers';
+import { hbs } from 'ember-cli-htmlbars';
+import { TemplateFactory } from 'htmlbars-inline-precompile';
 
 declare module '@lblod/ember-rdfa-editor' {
   export interface InlineComponents {
-    'inline-components-plugin/card': CardSpec;
+    card: CardSpec;
   }
 }
 export default class CardSpec extends InlineComponentSpec {
+  name = 'card';
+  tag: keyof HTMLElementTagNameMap = 'span';
+  template: TemplateFactory = hbs`<InlineComponentsPlugin::Card/>`;
+  atomic = true;
   matcher = {
     tag: this.tag,
     attributeBuilder: (node: Node) => {
@@ -30,11 +35,7 @@ export default class CardSpec extends InlineComponentSpec {
     return `<div>
               <h1>Title</h1>
               <p>Subtitle</p>
-              <span data-slot>
-              </span>
+              <span data-slot />
             </div>`;
-  }
-  constructor(controller: Controller) {
-    super('inline-components-plugin/card', 'span', controller, false);
   }
 }
