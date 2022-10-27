@@ -133,7 +133,11 @@ export default class ModelPosition {
 
     let i = 0;
     let current: ModelNode | null = this.root;
-    while (ModelNode.isModelElement(current) && i < this.path.length - 1) {
+    while (
+      (ModelNode.isModelElement(current) ||
+        ModelNode.isModelInlineComponent(current)) &&
+      i < this.path.length - 1
+    ) {
       if (!current.childAtOffset(this.path[i], true)) {
         current.childAtOffset(this.path[i], true);
       }
