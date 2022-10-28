@@ -840,7 +840,11 @@ export function modelPosToDomPos(
       if (offset === 0) {
         index = 0;
       } else {
-        index = cur.offsetToIndex(offset);
+        if (offset === cur.getMaxOffset()) {
+          index = cur.length - 1;
+        } else {
+          index = cur.offsetToIndex(offset);
+        }
       }
       indexPath.push(index);
       cur = cur.children[index];
