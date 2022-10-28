@@ -163,6 +163,10 @@ export default class Transaction {
     return this._differences;
   }
 
+  hasSelectionChanged() {
+    return !this.initialState.selection.sameAs(this.workingCopy.selection);
+  }
+
   async setPlugins(configs: ResolvedPluginConfig[], view: View): Promise<void> {
     for (const plugin of this.workingCopy.plugins) {
       if (plugin.willDestroy) {

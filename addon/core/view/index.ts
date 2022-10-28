@@ -160,14 +160,24 @@ export class EditorView implements View {
       differences = transaction.getDifferences();
     }
     this.currentState = newState;
-    this.update(this.currentState, differences, transaction.shouldFocus);
+    this.update(
+      this.currentState,
+      differences,
+      transaction.hasSelectionChanged(),
+      transaction.shouldFocus
+    );
     this.currentState.inlineComponentsManager.clean();
     this.currentState.transactionDispatchListeners.forEach((listener) => {
       listener(transaction);
     });
   }
 
-  update(state: State, differences: Difference[], shouldFocus = false): void {
+  update(
+    state: State,
+    differences: Difference[],
+    writeSelection = true,
+    shouldFocus = false
+  ): void {
     this.logger('Updating view with state:', state);
     this.logger('With differences:', differences);
     this.inputHandler.pause();
@@ -183,9 +193,11 @@ export class EditorView implements View {
       writeCounts++;
     });
     this.logger(`Wrote ${writeCounts} times to document`);
-    const selectionWriter = new SelectionWriter();
-    selectionWriter.write(state, this.domRoot, state.selection);
-    this.logger('Wrote selection:', state.selection);
+    if (writeSelection) {
+      const selectionWriter = new SelectionWriter();
+      selectionWriter.write(state, this.domRoot, state.selection);
+      this.logger('Wrote selection:', state.selection);
+    }
     if (shouldFocus) {
       (this.domRoot as HTMLElement).focus();
     }
