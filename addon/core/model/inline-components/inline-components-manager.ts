@@ -1,12 +1,14 @@
-import { ModelInlineComponent } from './model-inline-component';
+import {
+  EmberInlineComponent,
+  ModelInlineComponent,
+} from './model-inline-component';
 // eslint-disable-next-line ember/no-classic-components
-import Component from '@ember/component';
 import MapUtils from '@lblod/ember-rdfa-editor/utils/map-utils';
 
 export type ActiveComponentEntry = {
   model: ModelInlineComponent;
   node: HTMLElement;
-  emberComponentInstance: Component;
+  emberComponentInstance: EmberInlineComponent;
 };
 export default class InlineComponentsManager {
   activeComponents: Map<string, ActiveComponentEntry[]>;
@@ -19,7 +21,7 @@ export default class InlineComponentsManager {
   addComponentInstance(
     model: ModelInlineComponent,
     node: HTMLElement,
-    emberComponentInstance: Component
+    emberComponentInstance: EmberInlineComponent
   ) {
     MapUtils.setOrPush(this.activeComponents, model.spec.name, {
       model,
@@ -27,18 +29,6 @@ export default class InlineComponentsManager {
       emberComponentInstance,
     });
   }
-
-  // updateComponentInstanceNode(
-  //   model: ModelInlineComponent,
-  //   node: HTMLElement,
-  //   children: Node[]
-  // ) {
-  //   const entry = this.activeComponents.get(model);
-  //   if (entry) {
-  //     entry.node = node;
-  //     entry.children = children;
-  //   }
-  // }
 
   clean() {
     for (const [

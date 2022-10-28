@@ -10,8 +10,6 @@ declare module 'ember-get-config' {
 }
 
 declare module '@lblod/ember-rdfa-editor' {
-  // eslint-disable-next-line ember/no-classic-components
-  import Component from '@ember/component';
   // eslint-disable-next-line @typescript-eslint/no-empty-interface
   export interface Commands {}
   export type CommandName = keyof Commands;
@@ -27,8 +25,4 @@ declare module '@lblod/ember-rdfa-editor' {
   // eslint-disable-next-line @typescript-eslint/no-empty-interface
   export interface InlineComponents {}
   export type InlineComponentName = keyof InlineComponents;
-
-  export interface EmberComponent extends Component {
-    appendTo(selector: string | Element): this;
-  }
 }

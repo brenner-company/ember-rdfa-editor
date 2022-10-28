@@ -1,18 +1,9 @@
-import Controller from '../../controllers/controller';
 import { Serializable } from '../../../utils/render-spec';
 import {
   ModelInlineComponent,
   Properties,
   State,
 } from './model-inline-component';
-
-export interface InlineComponentArgs<
-  A extends Properties = Properties,
-  S extends State = State
-> {
-  componentController: InlineComponentController<A, S>;
-  editorController: Controller;
-}
 
 export default class InlineComponentController<
   A extends Properties = Properties,

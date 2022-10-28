@@ -7,7 +7,7 @@ import { AttributeSpec, Serializable } from '../../../utils/render-spec';
 import { TemplateFactory } from 'htmlbars-inline-precompile';
 import InlineComponentController from './inline-component-controller';
 import { v4 as uuidv4 } from 'uuid';
-import { EmberComponent, InlineComponentName } from '@lblod/ember-rdfa-editor';
+import { InlineComponentName } from '@lblod/ember-rdfa-editor';
 // eslint-disable-next-line ember/no-classic-components
 import Component from '@ember/component';
 
@@ -29,6 +29,12 @@ export abstract class InlineComponentSpec {
   }
 
   abstract _renderStatic(props?: Properties, state?: State): string;
+}
+
+export interface EmberInlineComponent extends Component {
+  appendTo(selector: string | Element): this;
+  componentController: InlineComponentController;
+  editorController: Controller;
 }
 
 function createWrapper(
@@ -91,7 +97,7 @@ export class ModelInlineComponent<
   }
   write(dynamic = true): {
     element: HTMLElement;
-    emberComponent?: EmberComponent;
+    emberComponent?: EmberInlineComponent;
   } {
     const node = createWrapper(this.spec, this.props, this.state);
     if (dynamic) {
@@ -103,15 +109,13 @@ export class ModelInlineComponent<
         Component.extend({
           layout: this.spec.template,
           tagName: '',
-          // eslint-disable-next-line ember/avoid-leaking-state-in-ember-objects
-          componentController: new InlineComponentController(this),
-          editorController: this.spec.controller,
         })
       );
       const component = instance?.lookup(
         `component:${componentName}`
-      ) as EmberComponent;
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+      ) as EmberInlineComponent; // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+      component.set('componentController', new InlineComponentController(this));
+      component.set('editorController', this.spec.controller);
       component.appendTo(node);
       return {
         element: node,
