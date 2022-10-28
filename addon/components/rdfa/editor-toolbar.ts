@@ -38,8 +38,8 @@ export default class EditorToolbar extends Component<Args> {
   @tracked tableAddColumns = 2;
   selection: ModelSelection | null = null;
 
-  @action
-  didInsert() {
+  constructor(parent: unknown, args: Args) {
+    super(parent, args);
     this.args.controller.addTransactionDispatchListener(this.update);
   }
 

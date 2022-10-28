@@ -16,8 +16,8 @@ type Args = {
 export default class CodeMarkToolbarButton extends Component<Args> {
   @tracked isCode = false;
 
-  @action
-  didInsert() {
+  constructor(parent: unknown, args: Args) {
+    super(parent, args);
     this.args.controller.addTransactionDispatchListener(this.update);
   }
 
