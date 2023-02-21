@@ -29,6 +29,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Modify the base keymaps to better support macos users
 - Replace text marks in another way in attribute generation plugin to fix cursor jumping
 - Keep selection on the document when toggling annotations
+- Ensure node-selections are kept intact when updating the markup of a node in the attribute-generation-plugin
 
 ### Dependencies
 - Bumps `dompurify` from 2.4.1 to 3.0.0
