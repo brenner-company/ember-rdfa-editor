@@ -250,14 +250,17 @@ $say-editor-highlight-selected-color: var(--au-gray-300) !default;
       list-style-type: none;
       margin: 0;
       padding: 0 0 0 .75rem;
+      counter-reset: item;
 
       > li {
         display: table-row;
+        counter-increment: item;
 
         &:before {
           display: table-cell;
           min-width: 2.75ch;
           text-align: end;
+          content: counters(item, ".") ". ";
         }
 
         @if $current-level < $levels {
@@ -265,49 +268,60 @@ $say-editor-highlight-selected-color: var(--au-gray-300) !default;
             @include decimal-extended-styling($levels, $current-level + 1);
           }
         }
+
+        @if $current-level == $levels {
+          > ol:not([data-list-style]) {
+            list-style-type: decimal;
+
+            ol:not([data-list-style]) {
+              list-style-type: inherit;
+            }
+          }
+        }
       }
     }
 
     &[data-list-style='decimal-extended'] {
       @include decimal-extended-styling(5, 1);
-    }
 
-    // Provides the counter values for the decimal-extended (multi-level) list type for each time it is nested
-    @mixin decimal-extended-numbering($total, $times-nested) {
-      &,
-      ol {
-        counter-reset: nested-#{$times-nested};
+      ol[data-list-style='decimal-extended'] {
+        &,
+        ol {
+          display: block !important;
+          padding: 0 0 0 3rem !important;
+          counter-reset: none !important;
 
-        li {
-          counter-increment: nested-#{$times-nested};
+          li {
+            display: list-item !important;
+            counter-increment: none !important;
 
-          &:before {
-            content: counters(nested-#{$times-nested}, ".") ". ";
+            &:before{
+              display: inline !important;
+              content: none !important;
+            }
           }
         }
-      }
 
-      // NOTE: This needs to be reset each time it is nested (because it is the only visible value)
-      ul,
-      ol[data-list-style='decimal'],
-      ol[data-list-style='upper-roman'],
-      ol[data-list-style='lower-alpha'] {
-        li {
-          &:before {
-            content: none;
-          }
+        &[data-list-style='decimal-extended'] {
+          list-style-type: decimal !important;
+        }
+
+        & > li > ol:not([data-list-style]) {
+          list-style-type: inherit !important;
+        }
+
+        &[data-list-style='decimal'] {
+          list-style-type: decimal !important;
+        }
+
+        &[data-list-style='upper-roman'] {
+          list-style-type: upper-roman !important;
+        }
+
+        &[data-list-style='lower-alpha'] {
+          list-style-type: lower-alpha !important;
         }
       }
-
-      @if $times-nested < $total {
-        ol[data-list-style='decimal-extended'] {
-          @include decimal-extended-numbering($total, $times-nested + 1);
-       }
-     }
-    }
-
-    &[data-list-style='decimal-extended'] {
-      @include decimal-extended-numbering(5, 1);
     }
 
     // Stop indenting
