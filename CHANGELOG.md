@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Addition of extended decimal list (styling) option (currently only for usage within Kaleidos)
+
 ## [3.10.1] - 2023-08-17
 
 ### Fixed
