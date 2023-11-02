@@ -1,4 +1,5 @@
-import { findParentNode } from '@curvenote/prosemirror-utils';
+import { findParentNode, findChildren } from '@curvenote/prosemirror-utils';
+import { findNodes } from '@lblod/ember-rdfa-editor/utils/position-utils';
 import { action } from '@ember/object';
 import { inject as service } from '@ember/service';
 import Component from '@glimmer/component';
@@ -53,6 +54,41 @@ export default class ListOrdered extends Component<Args> {
         node.type === this.schema.nodes.ordered_list ||
         node.type === this.schema.nodes.bullet_list
     )(this.selection);
+  }
+
+  get firstListParentWithStyle() {
+    return findParentNode(
+      (node) =>
+        node.type === this.schema.nodes.ordered_list &&
+        node.attrs.style !== null
+    )(this.selection);
+  }
+
+  hasListParentWithStyle(style: OrderListStyle) {
+    const parentNodeWithStyle = findParentNode(
+      (node) =>
+        node.type === this.schema.nodes.ordered_list &&
+        node.attrs.style === style
+    )(this.selection);
+
+    return parentNodeWithStyle ? true : false;
+  }
+
+  firstListChildWithStyle(style?: OrderListStyle) {
+    const styleName = style ?? null;
+    const parentNode = this.firstListParent?.node;
+
+    if (parentNode) {
+      return findChildren(
+        parentNode,
+        (node) =>
+          node.type === this.schema.nodes.ordered_list &&
+          node.attrs.style !== styleName,
+        true
+      );
+    } else {
+      return undefined;
+    }
   }
 
   get isActive() {
@@ -118,7 +154,25 @@ export default class ListOrdered extends Component<Args> {
     if (
       firstListParent?.node.type === this.controller.schema.nodes.ordered_list
     ) {
-      return firstListParent.node.attrs.style === style;
+      if (style === 'decimal-extended') {
+        return (
+          this.firstListParentWithStyle?.node.attrs.style === 'decimal-extended'
+        );
+      } else {
+        return firstListParent.node.attrs.style === style;
+      }
+    } else {
+      return false;
+    }
+  };
+
+  styleIsRestricted = (style: string) => {
+    if (style === 'decimal-extended') {
+      const hasListParent = this.hasListParentWithStyle('decimal-extended');
+      const firstListChild = this.firstListChildWithStyle('decimal-extended');
+      return hasListParent && firstListChild
+        ? firstListChild.length > 0
+        : false;
     } else {
       return false;
     }
