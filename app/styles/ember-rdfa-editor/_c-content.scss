@@ -283,45 +283,6 @@ $say-editor-highlight-selected-color: var(--au-gray-300) !default;
 
     &[data-list-style='decimal-extended'] {
       @include decimal-extended-styling(5, 1);
-
-      ol[data-list-style='decimal-extended'] {
-        &,
-        ol {
-          display: block !important;
-          padding: 0 0 0 3rem !important;
-          counter-reset: none !important;
-
-          li {
-            display: list-item !important;
-            counter-increment: none !important;
-
-            &:before{
-              display: inline !important;
-              content: none !important;
-            }
-          }
-        }
-
-        &[data-list-style='decimal-extended'] {
-          list-style-type: decimal !important;
-        }
-
-        & > li > ol:not([data-list-style]) {
-          list-style-type: inherit !important;
-        }
-
-        &[data-list-style='decimal'] {
-          list-style-type: decimal !important;
-        }
-
-        &[data-list-style='upper-roman'] {
-          list-style-type: upper-roman !important;
-        }
-
-        &[data-list-style='lower-alpha'] {
-          list-style-type: lower-alpha !important;
-        }
-      }
     }
 
     // Stop indenting
