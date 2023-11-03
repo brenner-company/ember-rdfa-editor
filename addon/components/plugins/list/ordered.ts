@@ -1,5 +1,4 @@
 import { findParentNode, findChildren } from '@curvenote/prosemirror-utils';
-import { findNodes } from '@lblod/ember-rdfa-editor/utils/position-utils';
 import { action } from '@ember/object';
 import { inject as service } from '@ember/service';
 import Component from '@glimmer/component';
@@ -32,6 +31,7 @@ export default class ListOrdered extends Component<Args> {
         description: this.intl.t(
           'ember-rdfa-editor.ordered-list.styles.decimal-extended'
         ),
+        remark: 'max. 1',
       },
       {
         name: 'lower-alpha',
@@ -56,39 +56,27 @@ export default class ListOrdered extends Component<Args> {
     )(this.selection);
   }
 
-  get firstListParentWithStyle() {
-    return findParentNode(
-      (node) =>
-        node.type === this.schema.nodes.ordered_list &&
-        node.attrs.style !== null
-    )(this.selection);
-  }
-
   hasListParentWithStyle(style: OrderListStyle) {
     const parentNodeWithStyle = findParentNode(
       (node) =>
         node.type === this.schema.nodes.ordered_list &&
-        node.attrs.style === style
+        node.attrs.style !== null
     )(this.selection);
 
-    return parentNodeWithStyle ? true : false;
+    return parentNodeWithStyle?.node?.attrs?.style === style ? true : false;
   }
 
-  firstListChildWithStyle(style?: OrderListStyle) {
-    const styleName = style ?? null;
-    const parentNode = this.firstListParent?.node;
+  docHasListWithStyle(style: OrderListStyle) {
+    const rootNode = this.controller.activeEditorState.doc;
+    const results = findChildren(
+      rootNode,
+      (node) =>
+        node.type === this.schema.nodes.ordered_list &&
+        node.attrs.style === style,
+      true
+    );
 
-    if (parentNode) {
-      return findChildren(
-        parentNode,
-        (node) =>
-          node.type === this.schema.nodes.ordered_list &&
-          node.attrs.style !== styleName,
-        true
-      );
-    } else {
-      return undefined;
-    }
+    return results.length > 0;
   }
 
   get isActive() {
@@ -155,9 +143,7 @@ export default class ListOrdered extends Component<Args> {
       firstListParent?.node.type === this.controller.schema.nodes.ordered_list
     ) {
       if (style === 'decimal-extended') {
-        return (
-          this.firstListParentWithStyle?.node.attrs.style === 'decimal-extended'
-        );
+        return this.hasListParentWithStyle('decimal-extended');
       } else {
         return firstListParent.node.attrs.style === style;
       }
@@ -168,11 +154,7 @@ export default class ListOrdered extends Component<Args> {
 
   styleIsRestricted = (style: string) => {
     if (style === 'decimal-extended') {
-      const hasListParent = this.hasListParentWithStyle('decimal-extended');
-      const firstListChild = this.firstListChildWithStyle('decimal-extended');
-      return hasListParent && firstListChild
-        ? firstListChild.length > 0
-        : false;
+      return this.docHasListWithStyle('decimal-extended');
     } else {
       return false;
     }
