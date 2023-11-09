@@ -436,6 +436,28 @@ export default {
             <li>List item 11</li>
             <li>List item 12</li>
           </ol>
+          <ul>
+            <li>List item</li>
+            <li>List item
+              <ul>
+                <li>List item</li>
+                <li>List item
+                  <ol data-list-style='decimal-extended'>
+                    <li>List item 1</li>
+                    <li>List item 2</li>
+                    <li>List item 3
+                      <ol>
+                        <li>List item 3.1</li>
+                        <li>List item 3.2</li>
+                        <li>List item 3.3</li>
+                      </ol>
+                    </li>
+                  </ol>
+                </li>
+              </ul>
+            </li>
+            <li>List item</li>
+          </ul>
       </div>`,
   brs: `<h1>Break heaven/hell</h1><br><br><p>Yo-ho-ho scourge of the seven seas log Shiver me timbers chase code of conduct fire in the hole gunwalls interloper dead men tell no tales. Bounty long clothes trysail Pirate Round Sink me parley fire in the hole reef sails red ensign coxswain. Bilge water dance the hempen jig draft mutiny fire in the hole Corsair crack Jennys tea cup run a rig driver swing the lead.<br></p><br><p>Yardarm transom draught Spanish Main rutters lass long clothes belay reef sails haul wind. Strike colors chase topgallant swing the lead topsail hail-shot cable Shiver me timbers hogshead warp. Draft rigging parrel nipperkin case shot crow's nest sutler pillage grapple trysail.<br></p><div>Shrouds spyglass yard black jack Gold Road sutler hornswaggle sloop splice the main brace knave. Furl ahoy quarterdeck hornswaggle walk the plank hang the jib scuttle hearties pirate American Main. Starboard pressgang Chain Shot wherry hail-shot lanyard killick topgallant galleon crim<br></div><br>Yo-ho-ho scourge of the seven seas log Shiver me timbers chase code of conduct fire in the hole gunwalls interloper dead men tell no tales. Bounty long clothes trysail Pirate Round Sink me parley fire in the hole reef sails red ensign coxswain. Bilge water dance the hempen jig draft mutiny fire in the hole Corsair crack Jennys tea cup run a rig driver swing the lead. <br><br>
 <h1>Breaks before blocks</h1>

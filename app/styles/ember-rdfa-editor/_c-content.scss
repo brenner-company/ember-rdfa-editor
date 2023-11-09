@@ -259,7 +259,9 @@ $say-editor-highlight-selected-color: var(--au-gray-300) !default;
         &:before {
           display: table-cell;
           min-width: 2.75ch;
+          padding-right: .5ch;
           text-align: end;
+          white-space: nowrap;
           content: counters(item, ".") ". ";
         }
 
