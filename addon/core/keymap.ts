@@ -4,8 +4,24 @@ import {
   sinkListItem,
   splitListItem,
 } from 'prosemirror-schema-list';
-import { Command } from 'prosemirror-state';
-import { Schema } from 'prosemirror-model';
+import { canSplit } from 'prosemirror-transform';
+import {
+  AllSelection,
+  Command,
+  EditorState,
+  NodeSelection,
+  TextSelection,
+  Transaction,
+} from 'prosemirror-state';
+import {
+  Node,
+  ContentMatch,
+  Schema,
+  NodeType,
+  Attrs,
+  Fragment,
+  Slice,
+} from 'prosemirror-model';
 import { toggleMarkAddFirst } from '@lblod/ember-rdfa-editor/commands/toggle-mark-add-first';
 import {
   chainCommands,
@@ -94,6 +110,194 @@ const del = chainCommands(
   },
   selectNodeForward
 );
+
+function defaultBlockAt(match: ContentMatch) {
+  for (let i = 0; i < match.edgeCount; i++) {
+    const { type } = match.edge(i);
+    if (type.isTextblock && !type.hasRequiredAttrs()) return type;
+  }
+  return null;
+}
+
+function splitBlockAsBis(
+  splitNode?: (
+    node: Node,
+    atEnd: boolean
+  ) => { type: NodeType; attrs?: Attrs } | null
+): Command {
+  return (state, dispatch) => {
+    const { $from, $to } = state.selection;
+    console.log('splitBlockAsBis');
+    if (
+      state.selection instanceof NodeSelection &&
+      state.selection.node.isBlock
+    ) {
+      if (!$from.parentOffset || !canSplit(state.doc, $from.pos)) return false;
+      if (dispatch) dispatch(state.tr.split($from.pos).scrollIntoView());
+      return true;
+    }
+
+    if (!$from.parent.isBlock) return false;
+
+    if (dispatch) {
+      const atEnd = $to.parentOffset == $to.parent.content.size;
+      const tr = state.tr;
+      if (
+        state.selection instanceof TextSelection ||
+        state.selection instanceof AllSelection
+      )
+        tr.deleteSelection();
+      const deflt =
+        $from.depth == 0
+          ? null
+          : defaultBlockAt($from.node(-1).contentMatchAt($from.indexAfter(-1)));
+      const splitType = splitNode && splitNode($to.parent, atEnd);
+      let types = splitType
+        ? [splitType]
+        : atEnd && deflt
+        ? [{ type: deflt }]
+        : undefined;
+      let can = canSplit(tr.doc, tr.mapping.map($from.pos), 1, types);
+      if (
+        !types &&
+        !can &&
+        canSplit(
+          tr.doc,
+          tr.mapping.map($from.pos),
+          1,
+          deflt ? [{ type: deflt }] : undefined
+        )
+      ) {
+        if (deflt) types = [{ type: deflt }];
+        can = true;
+      }
+      if (can) {
+        tr.split(tr.mapping.map($from.pos), 1, types);
+        if (!atEnd && !$from.parentOffset && $from.parent.type != deflt) {
+          const first = tr.mapping.map($from.before()),
+            $first = tr.doc.resolve(first);
+          if (
+            deflt &&
+            $from
+              .node(-1)
+              .canReplaceWith($first.index(), $first.index() + 1, deflt)
+          )
+            tr.setNodeMarkup(tr.mapping.map($from.before()), deflt);
+        }
+      }
+      dispatch(tr.scrollIntoView());
+    }
+    return true;
+  };
+}
+
+/// Build a command that splits a non-empty textblock at the top level
+/// of a list item by also splitting that list item.
+export function splitListItemBis(
+  itemType: NodeType,
+  itemAttrs?: Attrs
+): Command {
+  return function (state: EditorState, dispatch?: (tr: Transaction) => void) {
+    console.log('splitListItemBis');
+    const { $from, $to, node } = state.selection as NodeSelection;
+    if ((node && node.isBlock) || $from.depth < 2 || !$from.sameParent($to))
+      return false;
+    const grandParent = $from.node(-1);
+    if (grandParent.type != itemType) return false;
+    if (
+      $from.parent.content.size == 0 &&
+      $from.node(-1).childCount == $from.indexAfter(-1)
+    ) {
+      // In an empty block. If this is a nested list, the wrapping
+      // list item should be split. Otherwise, bail out and let next
+      // command handle lifting.
+      if (
+        $from.depth == 3 ||
+        $from.node(-3).type != itemType ||
+        $from.index(-2) != $from.node(-2).childCount - 1
+      ) {
+        console.log('return false');
+        return false;
+      }
+      if (dispatch) {
+        console.log('dispatch');
+        let wrap = Fragment.empty;
+        const depthBefore = $from.index(-1) ? 1 : $from.index(-2) ? 2 : 3;
+        // Build a fragment containing empty versions of the structure
+        // from the outer list item to the parent node of the cursor
+        for (let d = $from.depth - depthBefore; d >= $from.depth - 3; d--)
+          wrap = Fragment.from($from.node(d).copy(wrap));
+        const depthAfter =
+          $from.indexAfter(-1) < $from.node(-2).childCount
+            ? 1
+            : $from.indexAfter(-2) < $from.node(-3).childCount
+            ? 2
+            : 3;
+        // Add a second list item with an empty default start node
+        wrap = wrap.append(Fragment.from(itemType.createAndFill()));
+        const start = $from.before($from.depth - (depthBefore - 1));
+        const tr = state.tr.replace(
+          start,
+          $from.after(-depthAfter),
+          new Slice(wrap, 4 - depthBefore, 0)
+        );
+        let sel = -1;
+        tr.doc.nodesBetween(start, tr.doc.content.size, (node, pos) => {
+          if (sel > -1) return false;
+          if (node.isTextblock && node.content.size == 0) sel = pos + 1;
+        });
+        if (sel > -1)
+          dispatch(
+            tr.setSelection(NodeSelection.create(tr.doc, sel)).scrollIntoView()
+          );
+        dispatch(tr.scrollIntoView());
+      }
+      return true;
+    }
+    const nextType =
+      $to.pos == $from.end() ? grandParent.contentMatchAt(0).defaultType : null;
+    console.log(nextType);
+    const tr = state.tr.delete($from.pos, $to.pos);
+    const types = nextType
+      ? [
+          itemAttrs ? { type: itemType, attrs: itemAttrs } : null,
+          { type: nextType },
+        ]
+      : undefined;
+    if (!canSplit(tr.doc, $from.pos, 2, types)) return false;
+    if (dispatch) dispatch(tr.split($from.pos, 2, types).scrollIntoView());
+    return true;
+  };
+}
+
+/// If a block node is selected, create an empty paragraph before (if
+/// it is its parent's first child) or after it.
+export const createParagraphNearBis: Command = (state, dispatch) => {
+  const sel = state.selection,
+    { $from, $to } = sel;
+  console.log('createParagraphNearBis');
+  if (
+    sel instanceof AllSelection ||
+    $from.parent.inlineContent ||
+    $to.parent.inlineContent
+  ) {
+    console.log('return false');
+    return false;
+  }
+  const type = defaultBlockAt($to.parent.contentMatchAt($to.indexAfter()));
+  if (!type || !type.isTextblock) return false;
+  if (dispatch) {
+    const side = (
+      !$from.parentOffset && $to.index() < $to.parent.childCount ? $from : $to
+    ).pos;
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const tr = state.tr.insert(side, type.createAndFill()!);
+    tr.setSelection(TextSelection.create(tr.doc, side + 1));
+    dispatch(tr.scrollIntoView());
+  }
+  return true;
+};
+
 /// A basic keymap containing bindings not specific to any schema.
 /// Binds the following keys (when multiple commands are listed, they
 /// are chained with [`chainCommands`](#commands.chainCommands)):
@@ -116,11 +320,11 @@ export const pcBaseKeymap: Keymap = (schema, options) => ({
   'Mod-u': toggleMarkAddFirst(schema.marks['underline']),
   'Mod-U': toggleMarkAddFirst(schema.marks['underline']),
   Enter: chainCommands(
-    splitListItem(schema.nodes.list_item),
+    splitListItemBis(schema.nodes.list_item),
     newlineInCode,
-    createParagraphNear,
+    createParagraphNearBis,
     liftEmptyBlockChecked,
-    splitBlock,
+    splitBlockAsBis(),
     insertHardBreak
   ),
   'Shift-Enter': chainCommands(exitCode, insertHardBreak),
