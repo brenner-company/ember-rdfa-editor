@@ -1,4 +1,4 @@
-import { findParentNode } from '@curvenote/prosemirror-utils';
+import { findParentNode, findChildren } from '@curvenote/prosemirror-utils';
 import { action } from '@ember/object';
 import { inject as service } from '@ember/service';
 import Component from '@glimmer/component';
@@ -27,6 +27,13 @@ export default class ListOrdered extends Component<Args> {
         ),
       },
       {
+        name: 'decimal-extended',
+        description: this.intl.t(
+          'ember-rdfa-editor.ordered-list.styles.decimal-extended'
+        ),
+        remark: 'max. 1',
+      },
+      {
         name: 'lower-alpha',
         description: this.intl.t(
           'ember-rdfa-editor.ordered-list.styles.lower-alpha',
@@ -47,6 +54,29 @@ export default class ListOrdered extends Component<Args> {
         node.type === this.schema.nodes.ordered_list ||
         node.type === this.schema.nodes.bullet_list,
     )(this.selection);
+  }
+
+  hasListParentWithStyle(style: OrderListStyle) {
+    const parentNodeWithStyle = findParentNode(
+      (node) =>
+        node.type === this.schema.nodes.ordered_list &&
+        node.attrs.style !== null
+    )(this.selection);
+
+    return parentNodeWithStyle?.node?.attrs?.style === style ? true : false;
+  }
+
+  docHasListWithStyle(style: OrderListStyle) {
+    const rootNode = this.controller.activeEditorState.doc;
+    const results = findChildren(
+      rootNode,
+      (node) =>
+        node.type === this.schema.nodes.ordered_list &&
+        node.attrs.style === style,
+      true
+    );
+
+    return results.length > 0;
   }
 
   get isActive() {
@@ -112,7 +142,19 @@ export default class ListOrdered extends Component<Args> {
     if (
       firstListParent?.node.type === this.controller.schema.nodes.ordered_list
     ) {
-      return firstListParent.node.attrs.style === style;
+      if (style === 'decimal-extended') {
+        return this.hasListParentWithStyle('decimal-extended');
+      } else {
+        return firstListParent.node.attrs.style === style;
+      }
+    } else {
+      return false;
+    }
+  };
+
+  styleIsRestricted = (style: string) => {
+    if (style === 'decimal-extended') {
+      return this.docHasListWithStyle('decimal-extended');
     } else {
       return false;
     }

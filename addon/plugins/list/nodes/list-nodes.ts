@@ -2,7 +2,11 @@ import { Node as PNode, NodeSpec } from 'prosemirror-model';
 import { getRdfaAttrs, rdfaAttrs } from '@lblod/ember-rdfa-editor/core/schema';
 import { optionMapOr } from '@lblod/ember-rdfa-editor/utils/_private/option';
 
-export type OrderListStyle = 'decimal' | 'upper-roman' | 'lower-alpha';
+export type OrderListStyle =
+  | 'decimal'
+  | 'decimal-extended'
+  | 'upper-roman'
+  | 'lower-alpha';
 
 type OrderedListAttrs = typeof rdfaAttrs & {
   order: number;
