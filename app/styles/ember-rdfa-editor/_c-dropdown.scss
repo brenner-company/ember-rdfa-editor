@@ -172,6 +172,11 @@ $say-smaller-font-size: 1.4rem !default;
   margin-right: $au-unit-tiny;
 }
 
+.say-dropdown__menu [role='menuitem'] .au-c-pill img,
+.say-dropdown__menu [role='menuitem'] .au-c-pill svg {
+  margin-right: 0;
+}
+
 .say-dropdown__menu [role='menuitem'] img {
   filter: invert(43%) sepia(35%) saturate(180%) hue-rotate(173deg) brightness(97%) contrast(94%);
 }

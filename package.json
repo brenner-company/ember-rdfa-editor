@@ -31,7 +31,7 @@
     "prepublishOnly": "ember ts:precompile",
     "postpublish": "ember ts:clean",
     "release": "release-it",
-    "prepack": "ember ts:precompile",
+    "prepare": "ember ts:precompile",
     "postpack": "ember ts:clean"
   },
   "dependencies": {
