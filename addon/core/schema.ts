@@ -19,6 +19,7 @@ export const rdfaAttrs = {
   role: { default: undefined },
   inlist: { default: undefined },
   datetime: { default: undefined },
+  class: { default: undefined },
 };
 
 export function getRdfaAttrs(node: Element): Record<string, string> | false {

@@ -94,7 +94,7 @@ export function tableNodes(options: TableNodeOptions): TableNodes {
       content: 'table_row+',
       tableRole: 'table',
       isolating: true,
-      attrs: { ...rdfaAttrs, class: { default: 'say-table' } },
+      attrs: { ...rdfaAttrs },
       group: options.tableGroup,
       allowGapCursor: false,
       parseDOM: [
@@ -111,7 +111,16 @@ export function tableNodes(options: TableNodeOptions): TableNodes {
         },
       ],
       toDOM(node: PNode) {
-        return ['table', { ...node.attrs, class: 'say-table' }, ['tbody', 0]];
+        return [
+          'table',
+          {
+            ...node.attrs,
+            class: node.attrs.class
+              ? `say-table ${node.attrs.class}`
+              : 'say-table',
+          },
+          ['tbody', 0],
+        ];
       },
     },
     table_row: {
