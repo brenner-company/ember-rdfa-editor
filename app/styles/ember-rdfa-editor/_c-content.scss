@@ -286,6 +286,10 @@ $say-editor-highlight-selected-color: var(--au-gray-300) !default;
       list-style-type: lower-alpha;
     }
 
+    &[data-list-style='upper-alpha'] {
+      list-style-type: upper-alpha;
+    }
+
     &[data-list-style='decimal-extended'] {
       @include decimal-extended-styling(5, 1);
     }

@@ -6,7 +6,8 @@ export type OrderListStyle =
   | 'decimal'
   | 'decimal-extended'
   | 'upper-roman'
-  | 'lower-alpha';
+  | 'lower-alpha'
+  | 'upper-alpha';
 
 type OrderedListAttrs = typeof rdfaAttrs & {
   order: number;
