@@ -29,7 +29,7 @@ export default class ListOrdered extends Component<Args> {
       {
         name: 'decimal-extended',
         description: this.intl.t(
-          'ember-rdfa-editor.ordered-list.styles.decimal-extended'
+          'ember-rdfa-editor.ordered-list.styles.decimal-extended',
         ),
         remark: 'max. 1',
       },
@@ -66,7 +66,7 @@ export default class ListOrdered extends Component<Args> {
     const parentNodeWithStyle = findParentNode(
       (node) =>
         node.type === this.schema.nodes.ordered_list &&
-        node.attrs.style !== null
+        node.attrs.style !== null,
     )(this.selection);
 
     return parentNodeWithStyle?.node?.attrs?.style === style ? true : false;
@@ -79,7 +79,7 @@ export default class ListOrdered extends Component<Args> {
       (node) =>
         node.type === this.schema.nodes.ordered_list &&
         node.attrs.style === style,
-      true
+      true,
     );
 
     return results.length > 0;
